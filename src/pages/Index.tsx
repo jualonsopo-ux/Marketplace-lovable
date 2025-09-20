@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import MarketplaceFeed from '@/components/MarketplaceFeed';
 import CoachProfile from '@/components/CoachProfile';
+import CoachLandingPage from '@/components/CoachLandingPage';
 import BookingFlow from '@/components/BookingFlow';
 import { getCoachById } from '@/data/coaches';
 
-type AppState = 'feed' | 'profile' | 'booking';
+type AppState = 'feed' | 'profile' | 'landing' | 'booking';
 
 const Index = () => {
-  const [currentState, setCurrentState] = useState<AppState>('feed');
-  const [selectedCoachId, setSelectedCoachId] = useState<string | null>(null);
+  const [currentState, setCurrentState] = useState<AppState>('landing');
+  const [selectedCoachId, setSelectedCoachId] = useState<string | null>('ana-garcia'); // Default to first coach
 
   const selectedCoach = selectedCoachId ? getCoachById(selectedCoachId) : null;
 
@@ -31,10 +32,23 @@ const Index = () => {
     setCurrentState('profile');
   };
 
-  const handleBookingComplete = () => {
-    setCurrentState('feed');
-    setSelectedCoachId(null);
+  const handleBackToLanding = () => {
+    setCurrentState('landing');
   };
+
+  const handleBookingComplete = () => {
+    setCurrentState('landing');
+  };
+
+  // Show comprehensive coach landing page by default
+  if (currentState === 'landing' && selectedCoach) {
+    return (
+      <CoachLandingPage
+        coach={selectedCoach}
+        onBookingClick={() => handleBookSession(selectedCoach.id)}
+      />
+    );
+  }
 
   if (currentState === 'profile' && selectedCoach) {
     return (
@@ -50,7 +64,7 @@ const Index = () => {
     return (
       <BookingFlow
         coach={selectedCoach}
-        onBack={handleBackToProfile}
+        onBack={handleBackToLanding}
         onComplete={handleBookingComplete}
       />
     );
