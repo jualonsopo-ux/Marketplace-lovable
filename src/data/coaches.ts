@@ -1,9 +1,11 @@
-import { Coach } from '@/types/coaching';
+import type { Coach } from '@/types/coaching';
+import { transformLegacyCoachData, generateUUID } from '@/lib/validation';
 import coachAnaImage from '@/assets/coach-ana.jpg';
 import psychologistPabloImage from '@/assets/psychologist-pablo.jpg';
 import coachLauraImage from '@/assets/coach-laura.jpg';
 
-export const coaches: Coach[] = [
+// Legacy coach data (will be migrated in Phase 2)
+const legacyCoaches: Coach[] = [
   {
     id: 'ana-garcia',
     name: 'Ana García',
@@ -117,6 +119,71 @@ export const coaches: Coach[] = [
   }
 ];
 
+// Export legacy format for backward compatibility (Phase 1)
+export const coaches: Coach[] = legacyCoaches;
+
+// New architecture-ready data (will be primary in Phase 2)
+export const coachesWithNewSchema = legacyCoaches.map(transformLegacyCoachData);
+
+// Utility functions
 export const getCoachById = (id: string): Coach | undefined => {
   return coaches.find(coach => coach.id === id);
+};
+
+// Future: Get coach with new schema structure
+export const getCoachWithUserById = (id: string) => {
+  return coachesWithNewSchema.find(item => item.coach.id === id);
+};
+
+// Search and filtering utilities (ready for TanStack Query integration)
+export const searchCoaches = (query: string, filters?: {
+  category?: string;
+  minRating?: number;
+  maxPrice?: number;
+  languages?: string[];
+  specializations?: string[];
+}) => {
+  let filtered = coaches;
+
+  // Text search
+  if (query) {
+    const searchTerm = query.toLowerCase();
+    filtered = filtered.filter(coach => 
+      coach.name.toLowerCase().includes(searchTerm) ||
+      coach.bio.toLowerCase().includes(searchTerm) ||
+      coach.specialties.some(s => s.toLowerCase().includes(searchTerm))
+    );
+  }
+
+  // Apply filters
+  if (filters) {
+    if (filters.category) {
+      filtered = filtered.filter(coach => coach.category === filters.category);
+    }
+    if (filters.minRating) {
+      filtered = filtered.filter(coach => coach.rating >= filters.minRating!);
+    }
+    if (filters.languages?.length) {
+      filtered = filtered.filter(coach => 
+        filters.languages!.some(lang => coach.languages.includes(lang))
+      );
+    }
+    if (filters.specializations?.length) {
+      filtered = filtered.filter(coach => 
+        filters.specializations!.some(spec => coach.specialties.includes(spec))
+      );
+    }
+  }
+
+  return filtered;
+};
+
+// Get coaches by category
+export const getCoachesByCategory = (category: string) => {
+  return coaches.filter(coach => coach.category === category);
+};
+
+// Get featured coaches
+export const getFeaturedCoaches = () => {
+  return coaches.filter(coach => coach.badges.includes('⭐ Top'));
 };
