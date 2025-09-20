@@ -1,15 +1,18 @@
 import { useState } from 'react';
+import DashboardLayout from '@/components/DashboardLayout';
+import CoachDashboard from '@/components/CoachDashboard';
 import MarketplaceFeed from '@/components/MarketplaceFeed';
 import CoachProfile from '@/components/CoachProfile';
 import CoachLandingPage from '@/components/CoachLandingPage';
 import BookingFlow from '@/components/BookingFlow';
 import { getCoachById } from '@/data/coaches';
 
-type AppState = 'feed' | 'profile' | 'landing' | 'booking';
+type AppState = 'dashboard' | 'feed' | 'profile' | 'landing' | 'booking';
 
 const Index = () => {
-  const [currentState, setCurrentState] = useState<AppState>('landing');
+  const [currentState, setCurrentState] = useState<AppState>('dashboard');
   const [selectedCoachId, setSelectedCoachId] = useState<string | null>('ana-garcia'); // Default to first coach
+  const [currentPage, setCurrentPage] = useState('inicio');
 
   const selectedCoach = selectedCoachId ? getCoachById(selectedCoachId) : null;
 
@@ -37,10 +40,26 @@ const Index = () => {
   };
 
   const handleBookingComplete = () => {
-    setCurrentState('landing');
+    setCurrentState('dashboard');
   };
 
-  // Show comprehensive coach landing page by default
+  const handlePageChange = (pageId: string) => {
+    setCurrentPage(pageId);
+    if (pageId === 'inicio') {
+      setCurrentState('dashboard');
+    }
+  };
+
+  // Dashboard view by default
+  if (currentState === 'dashboard' && selectedCoach) {
+    return (
+      <DashboardLayout currentPage={currentPage} onPageChange={handlePageChange}>
+        <CoachDashboard coach={selectedCoach} />
+      </DashboardLayout>
+    );
+  }
+
+  // Show comprehensive coach landing page
   if (currentState === 'landing' && selectedCoach) {
     return (
       <CoachLandingPage
