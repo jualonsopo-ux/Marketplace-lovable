@@ -20,17 +20,17 @@ const AccordionFAQ = ({ items, title = "Preguntas frecuentes" }: AccordionFAQPro
 
   return (
     <section className="space-y-4">
-      <h3 className="text-xl font-bold">{title}</h3>
+      <h3 className="text-lg font-semibold text-foreground">{title}</h3>
       <div className="space-y-2">
         {items.map((item, index) => (
-          <div key={index} className="bg-card rounded-xl shadow-sm border border-border/50">
+          <div key={index} className="notion-card">
             <button
-              className="w-full text-left p-4 font-semibold flex justify-between items-center hover:bg-muted/50 transition-colors rounded-xl"
+              className="w-full text-left p-4 font-medium text-sm flex justify-between items-center hover:bg-muted/30 transition-colors rounded-lg"
               onClick={() => toggleAccordion(index)}
             >
-              <span>{item.question}</span>
+              <span className="text-foreground">{item.question}</span>
               <ChevronDown
-                className={`h-5 w-5 text-muted-foreground transition-transform duration-200 ${
+                className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${
                   openIndex === index ? 'rotate-180' : ''
                 }`}
               />
@@ -41,7 +41,7 @@ const AccordionFAQ = ({ items, title = "Preguntas frecuentes" }: AccordionFAQPro
               }`}
             >
               <div className="px-4">
-                <p className="text-muted-foreground leading-relaxed">{item.answer}</p>
+                <p className="text-muted-foreground text-xs leading-relaxed">{item.answer}</p>
               </div>
             </div>
           </div>

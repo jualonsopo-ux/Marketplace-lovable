@@ -23,27 +23,27 @@ const ServicesSection = ({ services, onBookingClick }: ServicesSectionProps) => 
 
   return (
     <section className="space-y-4">
-      <h3 className="text-xl font-bold">Servicios</h3>
-      <div className="space-y-4">
+      <h3 className="text-lg font-semibold text-foreground">Servicios</h3>
+      <div className="space-y-3">
         {services.map((service) => (
-          <div key={service.id} className="bg-card rounded-xl shadow-md border border-border/50 p-6 space-y-3">
+          <div key={service.id} className="notion-card p-4 space-y-3">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <h4 className="font-bold text-lg">{service.title}</h4>
-                <p className="text-muted-foreground text-sm">
+                <h4 className="font-medium text-sm text-foreground">{service.title}</h4>
+                <p className="text-muted-foreground text-xs">
                   Duración: {service.duration}min · Precio: {formatPrice(service.price, service.currency)}
                 </p>
               </div>
               {service.badge && (
-                <span className="bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">
+                <span className="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded-md border border-primary/20">
                   {service.badge}
                 </span>
               )}
             </div>
             
             <Button
-              variant="hero"
-              className="w-full rounded-xl py-3"
+              variant="default"
+              className="w-full rounded-lg py-2.5 text-sm"
               onClick={() => onBookingClick(service.id)}
             >
               Reservar

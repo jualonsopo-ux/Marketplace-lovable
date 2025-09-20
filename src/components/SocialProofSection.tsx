@@ -18,7 +18,7 @@ const SocialProofSection = ({ rating, showUpRate, reviews }: SocialProofSectionP
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${
+        className={`h-3 w-3 ${
           i < rating
             ? 'fill-yellow-400 text-yellow-400'
             : 'fill-gray-200 text-gray-200'
@@ -28,35 +28,35 @@ const SocialProofSection = ({ rating, showUpRate, reviews }: SocialProofSectionP
   };
 
   return (
-    <section className="bg-card rounded-xl shadow-md border border-border/50 p-6 space-y-6">
-      <h3 className="text-xl font-bold">Valoraciones</h3>
+    <section className="notion-card p-5 space-y-4">
+      <h3 className="text-lg font-semibold text-foreground">Valoraciones</h3>
       
       {/* Stats */}
-      <div className="flex justify-around text-center">
-        <div className="space-y-1">
-          <p className="text-4xl font-bold text-foreground">{rating}</p>
-          <p className="text-muted-foreground text-sm">Valoración media</p>
-          <div className="flex justify-center space-x-1">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="notion-metric text-center">
+          <p className="text-2xl font-semibold text-foreground">{rating}</p>
+          <p className="text-muted-foreground text-xs">Valoración media</p>
+          <div className="flex justify-center space-x-0.5 mt-1">
             {renderStars(Math.floor(rating))}
           </div>
         </div>
-        <div className="space-y-1">
-          <p className="text-4xl font-bold text-foreground">{showUpRate}</p>
-          <p className="text-muted-foreground text-sm">Show-up S1</p>
+        <div className="notion-metric text-center">
+          <p className="text-2xl font-semibold text-foreground">{showUpRate}</p>
+          <p className="text-muted-foreground text-xs">Show-up S1</p>
         </div>
       </div>
 
       {/* Reviews */}
-      <div className="space-y-4">
-        {reviews.map((review, index) => (
-          <div key={index} className="bg-gradient-card p-4 rounded-xl border border-border/30">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-semibold text-foreground">{review.name}</span>
-              <div className="flex space-x-1">
+      <div className="space-y-3">
+        {reviews.slice(0, 3).map((review, index) => (
+          <div key={index} className="bg-muted/30 p-3 rounded-lg border border-border/40">
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-medium text-foreground text-sm">{review.name}</span>
+              <div className="flex space-x-0.5">
                 {renderStars(review.rating)}
               </div>
             </div>
-            <p className="text-muted-foreground italic leading-relaxed">"{review.text}"</p>
+            <p className="text-muted-foreground text-xs leading-relaxed">"{review.text}"</p>
           </div>
         ))}
       </div>

@@ -142,108 +142,109 @@ const CoachLandingPage = ({ coach, onBookingClick }: CoachLandingPageProps) => {
   ];
 
   return (
-    <div className="min-h-screen bg-muted/20">
-      <main className="w-full max-w-2xl mx-auto px-4 py-8 space-y-8">
-        {/* Header */}
+    <div className="min-h-screen bg-background">
+      <main className="w-full max-w-2xl mx-auto px-4 py-6 space-y-6">{/* Header */}
         <header className="text-center space-y-4">
-          <div className="relative w-24 h-24 mx-auto">
+          <div className="relative w-20 h-20 mx-auto">
             <img
               src={coach.avatar}
               alt={coach.name}
-              className="rounded-full w-full h-full object-cover border-4 border-white shadow-lg"
+              className="rounded-full w-full h-full object-cover border-2 border-border shadow-sm"
             />
           </div>
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold">{coach.name}</h1>
-            <p className="text-muted-foreground">@{coach.handle}</p>
+            <h1 className="text-2xl font-semibold text-foreground">{coach.name}</h1>
+            <p className="text-muted-foreground text-sm">@{coach.handle}</p>
             <div className="flex justify-center flex-wrap gap-2">
               {coach.badges.map((badge, index) => (
                 <span
                   key={index}
-                  className="bg-primary/10 text-primary text-xs font-medium px-3 py-1 rounded-full"
+                  className="bg-primary/10 text-primary text-xs font-medium px-2.5 py-1 rounded-md border border-primary/20"
                 >
                   {badge}
                 </span>
               ))}
             </div>
-            <div className="flex justify-center space-x-6 text-muted-foreground">
+            <div className="flex justify-center space-x-4 text-muted-foreground pt-2">
               <Button variant="ghost" size="icon" onClick={handleWhatsAppClick}>
-                <MessageCircle className="h-5 w-5" />
+                <MessageCircle className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="icon">
-                <Instagram className="h-5 w-5" />
+                <Instagram className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </header>
 
         {/* Hero Section */}
-        <section className="text-center space-y-4">
-          <h2 className="text-2xl md:text-3xl font-bold leading-tight">
+        <section className="text-center space-y-4 py-2">
+          <h2 className="text-xl md:text-2xl font-semibold leading-tight text-foreground">
             Sesión estratégica de 10' con {coach.name}
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             {coach.headline} Sin compromiso.
           </p>
           <Button
             variant="hero"
             size="lg"
-            className="w-full rounded-xl py-4 text-base font-semibold"
+            className="w-full rounded-lg py-3 text-sm font-medium"
             onClick={onBookingClick}
           >
             Reservar S1 ahora
           </Button>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-xs">
             🔒 Stripe · ⏱️ Reserva en 60s · ❌ Sin permanencia
           </p>
         </section>
 
         {/* Quick Actions */}
-        <section className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
+        <section className="flex flex-col md:flex-row gap-2">
           <Button
-            variant="hero"
-            className="flex-1 rounded-xl py-3"
+            variant="default"
+            className="flex-1 rounded-lg py-2.5 text-sm"
             onClick={onBookingClick}
           >
             Reservar S1
           </Button>
           <Button
             variant="outline"
-            className="flex-1 rounded-xl py-3"
+            className="flex-1 rounded-lg py-2.5 text-sm"
             onClick={handleWhatsAppClick}
           >
             Pregunta rápida
           </Button>
           <Button
             variant="outline"
-            className="flex-1 rounded-xl py-3"
+            className="flex-1 rounded-lg py-2.5 text-sm"
             onClick={handleShareClick}
           >
-            <Share2 className="h-4 w-4 mr-2" />
+            <Share2 className="h-3 w-3 mr-1.5" />
             Compartir
           </Button>
         </section>
 
         {/* Featured Video */}
         <section>
-          <VideoPlayer
-            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-            poster="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg"
-            onBookingClick={onBookingClick}
-          />
+          <div className="notion-card overflow-hidden">
+            <VideoPlayer
+              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              poster="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg"
+              onBookingClick={onBookingClick}
+            />
+          </div>
         </section>
 
         {/* Booking Section */}
-        <section id="booking_s1" className="bg-card rounded-xl shadow-md border border-border/50 p-6 space-y-4">
-          <h3 className="text-xl font-bold">Reserva tu S1 (10')</h3>
-          <div className="text-center text-muted-foreground py-8 border-2 border-dashed border-border rounded-lg">
-            <p>Aquí se cargaría el calendario de Cal.com</p>
-            <p className="text-sm mt-2">Pulsa 'Reservar' para continuar</p>
+        <section id="booking_s1" className="notion-card p-5 space-y-4">
+          <h3 className="text-lg font-semibold text-foreground">Reserva tu S1 (10')</h3>
+          <div className="text-center text-muted-foreground py-6 border border-dashed border-border rounded-lg bg-muted/20">
+            <p className="text-sm">Aquí se cargaría el calendario de Cal.com</p>
+            <p className="text-xs mt-1">Pulsa 'Reservar' para continuar</p>
           </div>
           <Button
             variant="hero"
             size="lg"
-            className="w-full rounded-xl py-4"
+            className="w-full rounded-lg py-3 text-sm"
             onClick={onBookingClick}
           >
             Continuar con la reserva
@@ -251,17 +252,17 @@ const CoachLandingPage = ({ coach, onBookingClick }: CoachLandingPageProps) => {
         </section>
 
         {/* About Section */}
-        <section className="bg-card rounded-xl shadow-md border border-border/50 p-6 space-y-4">
-          <h3 className="text-xl font-bold">Sobre {coach.name}</h3>
-          <p className="text-muted-foreground leading-relaxed">{coach.bio}</p>
+        <section className="notion-card p-5 space-y-4">
+          <h3 className="text-lg font-semibold text-foreground">Sobre {coach.name}</h3>
+          <p className="text-muted-foreground text-sm leading-relaxed">{coach.bio}</p>
           <div className="space-y-3">
             <div>
-              <h4 className="font-semibold text-foreground mb-2">Especialidades</h4>
-              <div className="flex flex-wrap gap-2">
+              <h4 className="font-medium text-foreground mb-2 text-sm">Especialidades</h4>
+              <div className="flex flex-wrap gap-1.5">
                 {coach.specialties.map((specialty) => (
                   <span
                     key={specialty}
-                    className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm"
+                    className="bg-secondary text-secondary-foreground px-2.5 py-1 rounded-md text-xs border border-border/50"
                   >
                     {specialty}
                   </span>
@@ -269,12 +270,12 @@ const CoachLandingPage = ({ coach, onBookingClick }: CoachLandingPageProps) => {
               </div>
             </div>
             <div>
-              <h4 className="font-semibold text-foreground mb-2">Idiomas</h4>
-              <div className="flex flex-wrap gap-2">
+              <h4 className="font-medium text-foreground mb-2 text-sm">Idiomas</h4>
+              <div className="flex flex-wrap gap-1.5">
                 {coach.languages.map((language) => (
                   <span
                     key={language}
-                    className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm"
+                    className="bg-secondary text-secondary-foreground px-2.5 py-1 rounded-md text-xs border border-border/50"
                   >
                     {language}
                   </span>
@@ -282,8 +283,8 @@ const CoachLandingPage = ({ coach, onBookingClick }: CoachLandingPageProps) => {
               </div>
             </div>
             <div>
-              <h4 className="font-semibold text-foreground mb-1">Ubicación</h4>
-              <p className="text-muted-foreground">{coach.location}</p>
+              <h4 className="font-medium text-foreground mb-1 text-sm">Ubicación</h4>
+              <p className="text-muted-foreground text-sm">{coach.location}</p>
             </div>
           </div>
         </section>
@@ -305,21 +306,21 @@ const CoachLandingPage = ({ coach, onBookingClick }: CoachLandingPageProps) => {
         <AccordionFAQ items={faqItems} />
 
         {/* Compliance */}
-        <section className="text-center text-sm text-muted-foreground space-y-2">
+        <section className="text-center text-xs text-muted-foreground space-y-2 py-4">
           <p>Coaching ≠ terapia clínica. Para servicios sanitarios con psicólogos colegiados se aplican consentimientos clínicos.</p>
           <div className="space-x-4">
-            <Button variant="link" className="p-0 h-auto text-sm">Privacidad</Button>
-            <Button variant="link" className="p-0 h-auto text-sm">Términos</Button>
+            <Button variant="link" className="p-0 h-auto text-xs">Privacidad</Button>
+            <Button variant="link" className="p-0 h-auto text-xs">Términos</Button>
           </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="w-full max-w-2xl mx-auto px-4 py-8 text-center text-sm text-muted-foreground border-t mt-8">
+      <footer className="w-full max-w-2xl mx-auto px-4 py-6 text-center text-xs text-muted-foreground border-t border-border/60">
         <p>Marketplace</p>
         <div className="space-x-4 mt-2">
-          <Button variant="link" className="p-0 h-auto text-sm">Marketplace</Button>
-          <Button variant="link" className="p-0 h-auto text-sm">Soporte</Button>
+          <Button variant="link" className="p-0 h-auto text-xs">Marketplace</Button>
+          <Button variant="link" className="p-0 h-auto text-xs">Soporte</Button>
         </div>
       </footer>
 

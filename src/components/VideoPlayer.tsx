@@ -30,7 +30,7 @@ const VideoPlayer = ({ src, poster, onBookingClick }: VideoPlayerProps) => {
   };
 
   return (
-    <div className="relative rounded-xl overflow-hidden shadow-md bg-black aspect-video">
+    <div className="relative rounded-lg overflow-hidden shadow-sm bg-black aspect-video border border-border/60">
       <video
         ref={videoRef}
         className="w-full h-full object-cover"
@@ -50,17 +50,17 @@ const VideoPlayer = ({ src, poster, onBookingClick }: VideoPlayerProps) => {
       <Button
         variant="video"
         size="icon"
-        className="absolute top-4 left-4 rounded-full"
+        className="absolute top-3 left-3 rounded-full"
         onClick={togglePlay}
       >
-        <Play className="h-5 w-5" />
+        <Play className="h-4 w-4" />
       </Button>
       
       {/* CTA overlay */}
-      <div className="absolute bottom-4 left-4 right-4 text-center">
+      <div className="absolute bottom-3 left-3 right-3 text-center">
         <Button
-          variant="hero"
-          className="rounded-full px-6 py-2"
+          variant="default"
+          className="rounded-lg px-4 py-2 text-sm"
           onClick={onBookingClick}
         >
           Reserva tu S1
