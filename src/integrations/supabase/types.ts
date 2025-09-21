@@ -335,6 +335,60 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          email_notifications: boolean
+          id: string
+          language: string
+          marketing_emails: boolean
+          phone: string | null
+          push_notifications: boolean
+          role: string
+          status: string
+          timezone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          email_notifications?: boolean
+          id?: string
+          language?: string
+          marketing_emails?: boolean
+          phone?: string | null
+          push_notifications?: boolean
+          role?: string
+          status?: string
+          timezone?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          email_notifications?: boolean
+          id?: string
+          language?: string
+          marketing_emails?: boolean
+          phone?: string | null
+          push_notifications?: boolean
+          role?: string
+          status?: string
+          timezone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       session_reminders: {
         Row: {
           created_at: string
