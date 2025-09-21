@@ -1120,6 +1120,14 @@ export type Database = {
         Args: { new_role: string; user_email: string }
         Returns: undefined
       }
+      verify_uuid_consistency: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          table_name: string
+          total_records: number
+          uuid_columns: number
+        }[]
+      }
     }
     Enums: {
       booking_status:
