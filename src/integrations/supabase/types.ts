@@ -1076,7 +1076,10 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      current_profile_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       booking_status:
