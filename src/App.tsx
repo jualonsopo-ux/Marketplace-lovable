@@ -1,110 +1,108 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { AppLayout } from '@/components/layout/AppLayout';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { getCoachById } from '@/data/coaches';
+import BookingFlow from '@/components/BookingFlow';
+
+// Layouts
+import { PublicLayout } from '@/components/layouts/PublicLayout';
+import { DashboardLayout } from '@/components/layouts/DashboardLayout';
+
+// Public Pages
 import { HomePage } from '@/pages/HomePage';
 import { DiscoverPage } from '@/pages/DiscoverPage';
 import CoachLandingPage from '@/components/CoachLandingPage';
-import BookingFlow from '@/components/BookingFlow';
-import { getCoachById } from '@/data/coaches';
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+
+// Auth Pages
 import AuthPage from './pages/AuthPage';
-import ProtectedRoute from './components/ProtectedRoute';
+
+// Coach Pages
+import { AnalyticsDashboard } from '@/pages/coach/AnalyticsDashboard';
+
+// Error Pages
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
-  <TooltipProvider>
-    <Toaster />
-    <Sonner />
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-        {/* Authentication route */}
-        <Route path="/auth" element={<AuthPage />} />
-        
-        {/* Legacy route - keeping for now */}
-        <Route path="/legacy" element={<Index />} />
-        
-        {/* Coach Landing Pages (outside main layout for full-screen experience) */}
-        <Route path="/coaches/:coachId" element={<CoachLandingPageRoute />} />
-        <Route path="/coaches/:coachId/book" element={<BookingFlowRoute />} />
-        
-        {/* Main Application Routes */}
-        <Route path="/*" element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/discover" element={<DiscoverPage />} />
-              <Route path="/sessions" element={
-                <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Mis Sesiones</h1>
-                  <p className="text-muted-foreground">Página en construcción - Próximamente con TanStack Query</p>
-                </div>
-              } />
-              <Route path="/profile" element={
-                <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Mi Perfil</h1>
-                  <p className="text-muted-foreground">Página en construcción - Próximamente con TanStack Query</p>
-                </div>
-              } />
-              <Route path="/settings" element={
-                <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Configuración</h1>
-                  <p className="text-muted-foreground">Página en construcción - Próximamente con TanStack Query</p>
-                </div>
-              } />
-              <Route path="/payments" element={
-                <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Pagos</h1>
-                  <p className="text-muted-foreground">Página en construcción - Próximamente con TanStack Query</p>
-                </div>
-              } />
-              <Route path="/support" element={
-                <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Soporte</h1>
-                  <p className="text-muted-foreground">Página en construcción - Próximamente con TanStack Query</p>
-                </div>
-              } />
-              
-              {/* Coach Dashboard Routes */}
-              <Route path="/coach/dashboard" element={
-                <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Dashboard de Coach</h1>
-                  <p className="text-muted-foreground">Página en construcción - Próximamente con TanStack Query</p>
-                </div>
-              } />
-              <Route path="/coach/calendar" element={
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<PublicLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path="discover" element={<DiscoverPage />} />
+            </Route>
+
+            {/* Auth Routes */}
+            <Route path="/auth" element={<AuthPage />} />
+
+            {/* Coach Dashboard Routes */}
+            <Route 
+              path="/coach" 
+              element={
+                <ProtectedRoute allowedRoles={['coach']}>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate to="/coach/dashboard" replace />} />
+              <Route path="dashboard" element={<AnalyticsDashboard />} />
+              <Route path="calendar" element={
                 <div className="p-6">
                   <h1 className="text-2xl font-bold mb-4">Calendario</h1>
-                  <p className="text-muted-foreground">Página en construcción - Próximamente con TanStack Query</p>
+                  <p className="text-muted-foreground">Página en construcción</p>
                 </div>
               } />
-              <Route path="/coach/clients" element={
+              <Route path="clients" element={
                 <div className="p-6">
                   <h1 className="text-2xl font-bold mb-4">Mis Clientes</h1>
-                  <p className="text-muted-foreground">Página en construcción - Próximamente con TanStack Query</p>
+                  <p className="text-muted-foreground">Página en construcción</p>
                 </div>
               } />
-              <Route path="/coach/earnings" element={
+              <Route path="finances" element={
                 <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Ingresos</h1>
-                  <p className="text-muted-foreground">Página en construcción - Próximamente con TanStack Query</p>
+                  <h1 className="text-2xl font-bold mb-4">Finanzas</h1>
+                  <p className="text-muted-foreground">Página en construcción</p>
                 </div>
               } />
-              
-              {/* 404 */}
-              <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AppLayout>
-          </ProtectedRoute>
-        } />
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
-  </TooltipProvider>
+              <Route path="profile" element={
+                <div className="p-6">
+                  <h1 className="text-2xl font-bold mb-4">Mi Perfil</h1>
+                  <p className="text-muted-foreground">Página en construcción</p>
+                </div>
+              } />
+              <Route path="settings" element={
+                <div className="p-6">
+                  <h1 className="text-2xl font-bold mb-4">Configuración</h1>
+                  <p className="text-muted-foreground">Página en construcción</p>
+                </div>
+              } />
+            </Route>
+
+            {/* Legacy coach pages (outside main layout for full-screen experience) */}
+            <Route path="/coaches/:coachId" element={<CoachLandingPageRoute />} />
+            
+            {/* 404 Page */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
 );
 
 // Route components for coach pages
