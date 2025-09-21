@@ -202,6 +202,38 @@ export type Database = {
           },
         ]
       }
+      calendars: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          timezone: string
+          workspace_id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          name?: string
+          timezone?: string
+          workspace_id: number
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          name?: string
+          timezone?: string
+          workspace_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendars_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coach_policies: {
         Row: {
           coach_id: string
@@ -244,6 +276,83 @@ export type Database = {
             isOneToOne: true
             referencedRelation: "coaches"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      coach_profiles: {
+        Row: {
+          average_rating: number | null
+          bio: string
+          coaching_methods: string[] | null
+          created_at: string
+          currency: string | null
+          hourly_rate: number | null
+          id: number
+          instant_booking: boolean | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          languages: string[] | null
+          response_time_hours: number | null
+          specializations: string[] | null
+          title: string
+          total_reviews: number | null
+          total_sessions: number | null
+          updated_at: string
+          user_id: string
+          verification_status: string | null
+          years_experience: number | null
+        }
+        Insert: {
+          average_rating?: number | null
+          bio: string
+          coaching_methods?: string[] | null
+          created_at?: string
+          currency?: string | null
+          hourly_rate?: number | null
+          id?: never
+          instant_booking?: boolean | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          languages?: string[] | null
+          response_time_hours?: number | null
+          specializations?: string[] | null
+          title: string
+          total_reviews?: number | null
+          total_sessions?: number | null
+          updated_at?: string
+          user_id: string
+          verification_status?: string | null
+          years_experience?: number | null
+        }
+        Update: {
+          average_rating?: number | null
+          bio?: string
+          coaching_methods?: string[] | null
+          created_at?: string
+          currency?: string | null
+          hourly_rate?: number | null
+          id?: never
+          instant_booking?: boolean | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          languages?: string[] | null
+          response_time_hours?: number | null
+          specializations?: string[] | null
+          title?: string
+          total_reviews?: number | null
+          total_sessions?: number | null
+          updated_at?: string
+          user_id?: string
+          verification_status?: string | null
+          years_experience?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -506,37 +615,67 @@ export type Database = {
       }
       profiles: {
         Row: {
-          auth_user_id: string | null
+          avatar_url: string | null
+          bio: string | null
           created_at: string
+          display_name: string | null
           email: string
+          email_notifications: boolean | null
           full_name: string
           handle: string
           id: string
           is_active: boolean
-          role: Database["public"]["Enums"]["role"]
+          language: string | null
+          marketing_emails: boolean | null
+          phone: string | null
+          push_notifications: boolean | null
+          role: Database["public"]["Enums"]["user_role_enum"]
+          status: string | null
+          timezone: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
-          auth_user_id?: string | null
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string
+          display_name?: string | null
           email: string
+          email_notifications?: boolean | null
           full_name: string
           handle: string
           id?: string
           is_active?: boolean
-          role?: Database["public"]["Enums"]["role"]
+          language?: string | null
+          marketing_emails?: boolean | null
+          phone?: string | null
+          push_notifications?: boolean | null
+          role?: Database["public"]["Enums"]["user_role_enum"]
+          status?: string | null
+          timezone?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
-          auth_user_id?: string | null
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string
+          display_name?: string | null
           email?: string
+          email_notifications?: boolean | null
           full_name?: string
           handle?: string
           id?: string
           is_active?: boolean
-          role?: Database["public"]["Enums"]["role"]
+          language?: string | null
+          marketing_emails?: boolean | null
+          phone?: string | null
+          push_notifications?: boolean | null
+          role?: Database["public"]["Enums"]["user_role_enum"]
+          status?: string | null
+          timezone?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -684,6 +823,113 @@ export type Database = {
           },
         ]
       }
+      sessions: {
+        Row: {
+          calendar_id: number
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          client_notes: string | null
+          client_profile_id: string | null
+          coach_notes: string | null
+          coach_profile_id: number | null
+          created_at: string
+          created_by: string
+          description: string | null
+          ends_at: string
+          id: number
+          location: string | null
+          meeting_link: string | null
+          notes: string | null
+          price_eur: number | null
+          session_type: string | null
+          starts_at: string
+          status: Database["public"]["Enums"]["session_status_enum"]
+          title: string | null
+          type: Database["public"]["Enums"]["session_type_enum"]
+          updated_at: string
+          workspace_id: number
+        }
+        Insert: {
+          calendar_id?: number
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          client_notes?: string | null
+          client_profile_id?: string | null
+          coach_notes?: string | null
+          coach_profile_id?: number | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          ends_at: string
+          id?: never
+          location?: string | null
+          meeting_link?: string | null
+          notes?: string | null
+          price_eur?: number | null
+          session_type?: string | null
+          starts_at: string
+          status?: Database["public"]["Enums"]["session_status_enum"]
+          title?: string | null
+          type?: Database["public"]["Enums"]["session_type_enum"]
+          updated_at?: string
+          workspace_id?: number
+        }
+        Update: {
+          calendar_id?: number
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          client_notes?: string | null
+          client_profile_id?: string | null
+          coach_notes?: string | null
+          coach_profile_id?: number | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          ends_at?: string
+          id?: never
+          location?: string | null
+          meeting_link?: string | null
+          notes?: string | null
+          price_eur?: number | null
+          session_type?: string | null
+          starts_at?: string
+          status?: Database["public"]["Enums"]["session_status_enum"]
+          title?: string | null
+          type?: Database["public"]["Enums"]["session_type_enum"]
+          updated_at?: string
+          workspace_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_calendar_id_fkey"
+            columns: ["calendar_id"]
+            isOneToOne: false
+            referencedRelation: "calendars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_client_profile_id_fkey"
+            columns: ["client_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "sessions_coach_profile_id_fkey"
+            columns: ["coach_profile_id"]
+            isOneToOne: false
+            referencedRelation: "coach_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       showup_stats: {
         Row: {
           coach_id: string
@@ -744,6 +990,24 @@ export type Database = {
           processed?: boolean
           received_at?: string
           type?: string
+        }
+        Relationships: []
+      }
+      workspaces: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          name?: string
         }
         Relationships: []
       }
@@ -826,6 +1090,15 @@ export type Database = {
       flag_state: "on" | "off"
       offering_type: "S1" | "S2" | "S3" | "package"
       role: "coach" | "psychologist" | "admin" | "staff"
+      session_status_enum:
+        | "scheduled"
+        | "confirmed"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+        | "no_show"
+      session_type_enum: "S1" | "S2" | "follow_up" | "consultation"
+      user_role_enum: "client" | "coach" | "admin"
       webview_type: "instagram" | "tiktok" | "other"
     }
     CompositeTypes: {
@@ -966,6 +1239,16 @@ export const Constants = {
       flag_state: ["on", "off"],
       offering_type: ["S1", "S2", "S3", "package"],
       role: ["coach", "psychologist", "admin", "staff"],
+      session_status_enum: [
+        "scheduled",
+        "confirmed",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "no_show",
+      ],
+      session_type_enum: ["S1", "S2", "follow_up", "consultation"],
+      user_role_enum: ["client", "coach", "admin"],
       webview_type: ["instagram", "tiktok", "other"],
     },
   },
