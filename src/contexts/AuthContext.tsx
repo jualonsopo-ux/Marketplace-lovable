@@ -160,6 +160,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           title: "Registro exitoso",
           description: "Revisa tu email para confirmar tu cuenta.",
         });
+        
+        // For testing: if email confirmation is disabled, redirect immediately
+        console.log('Signup successful, checking auth state...');
       }
 
       return { error };
@@ -207,7 +210,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signOut,
     isAuthenticated: !!user,
     isCoach: profile?.role === 'coach',
-    isClient: profile?.role === 'staff', // Using 'staff' as client equivalent
+    isClient: profile?.role === 'client',
     isAdmin: profile?.role === 'admin',
   };
 

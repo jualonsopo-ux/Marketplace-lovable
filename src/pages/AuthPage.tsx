@@ -17,8 +17,9 @@ const AuthPage = () => {
   const [signInData, setSignInData] = useState({ email: '', password: '' });
   const [signUpData, setSignUpData] = useState({ email: '', password: '', displayName: '', confirmPassword: '', role: 'client' });
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated  
   if (user && !loading) {
+    console.log('Redirecting user:', user.email, 'confirmed:', user.email_confirmed_at);
     return <Navigate to="/" replace />;
   }
 
