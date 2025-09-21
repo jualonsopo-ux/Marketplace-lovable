@@ -657,7 +657,7 @@ export type Database = {
           status: string | null
           timezone: string | null
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           avatar_url?: string | null
@@ -678,7 +678,7 @@ export type Database = {
           status?: string | null
           timezone?: string | null
           updated_at?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           avatar_url?: string | null
@@ -699,7 +699,7 @@ export type Database = {
           status?: string | null
           timezone?: string | null
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
