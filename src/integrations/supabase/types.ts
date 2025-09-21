@@ -644,6 +644,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           email: string
+          email_confirm: boolean | null
           email_notifications: boolean | null
           full_name: string
           handle: string
@@ -665,6 +666,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email: string
+          email_confirm?: boolean | null
           email_notifications?: boolean | null
           full_name: string
           handle: string
@@ -686,6 +688,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string
+          email_confirm?: boolean | null
           email_notifications?: boolean | null
           full_name?: string
           handle?: string
