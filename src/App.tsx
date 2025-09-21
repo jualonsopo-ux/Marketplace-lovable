@@ -27,6 +27,7 @@ import { LoginPage } from './pages/auth/LoginPage';
 
 // Coach Pages
 import { AnalyticsDashboard } from '@/pages/coach/AnalyticsDashboard';
+import CoachWaveDebugDashboard from '@/components/CoachWaveDebugDashboard';
 
 // Error Pages
 import NotFound from "./pages/NotFound";
@@ -56,6 +57,9 @@ const App = () => (
             {/* Auth Routes */}
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/login" element={<LoginPage />} />
+
+            {/* Debug Route - Development only */}
+            <Route path="/debug" element={<CoachWaveDebugDashboard />} />
 
             {/* Coach Dashboard Routes */}
             <Route 
