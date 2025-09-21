@@ -942,13 +942,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "sessions_coach_profile_id_fkey"
-            columns: ["coach_profile_id"]
-            isOneToOne: false
-            referencedRelation: "coach_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "sessions_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
