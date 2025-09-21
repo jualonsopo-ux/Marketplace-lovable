@@ -556,6 +556,30 @@ export type Database = {
           },
         ]
       }
+      lib_screen_json: {
+        Row: {
+          app: Json
+          created_at: string
+          handle: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          app: Json
+          created_at?: string
+          handle: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          app?: Json
+          created_at?: string
+          handle?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       offerings: {
         Row: {
           badge: string | null
