@@ -1116,6 +1116,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      update_user_role: {
+        Args: { new_role: string; user_email: string }
+        Returns: undefined
+      }
     }
     Enums: {
       booking_status:

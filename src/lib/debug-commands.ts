@@ -1,6 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { testSupabaseConnection, runFullDiagnostic } from './supabase-test';
 import { createTestUser, cleanupTestUser } from '@/scripts/create-test-user';
+import { createSampleUsers, cleanupSampleUsers } from '@/scripts/create-sample-users';
 
 // Comandos de debugging para la consola del navegador
 export const debugCommands = {
@@ -46,6 +47,44 @@ export const debugCommands = {
   async cleanupTestUser() {
     console.log('🧹 Limpiando usuario de prueba...');
     return await cleanupTestUser();
+  },
+
+  // Gestión de usuarios de muestra con roles
+  async createSampleUsers() {
+    console.log('👥 Creando usuarios de muestra con todos los roles...');
+    return await createSampleUsers();
+  },
+
+  async cleanupSampleUsers() {
+    console.log('🧹 Limpiando usuarios de muestra...');
+    return await cleanupSampleUsers();
+  },
+
+  async checkAllUsers() {
+    console.log('👥 Verificando todos los usuarios y roles...');
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('email, role, full_name, display_name, created_at')
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error obteniendo usuarios:', error);
+      return { data: null, error };
+    }
+    
+    console.log('📊 Usuarios existentes:');
+    console.table(data);
+    
+    // Contar usuarios por rol
+    const roleCount = data.reduce((acc: Record<string, number>, user) => {
+      acc[user.role] = (acc[user.role] || 0) + 1;
+      return acc;
+    }, {});
+    
+    console.log('📈 Usuarios por rol:');
+    console.table(roleCount);
+    
+    return { data, error: null };
   },
 
   // Verificaciones de base de datos
@@ -164,7 +203,12 @@ export const debugCommands = {
 📋 Base de Datos:
   debugCommands.checkTables()      - Verificar todas las tablas
   debugCommands.checkCoachProfiles() - Ver perfiles de coach
-  debugCommands.checkSessions()    - Ver sesiones
+  debugCommands.checkBookings()    - Ver reservas
+
+👥 Usuarios y Roles:
+  debugCommands.checkAllUsers()    - Ver todos los usuarios y roles
+  debugCommands.createSampleUsers() - Crear usuarios de muestra (TODOS LOS ROLES)
+  debugCommands.cleanupSampleUsers() - Limpiar usuarios de muestra
 
 👤 Usuario de Prueba:
   debugCommands.createTestUser()   - Crear usuario coach@test.com
@@ -172,6 +216,13 @@ export const debugCommands = {
 
 ❓ Ayuda:
   debugCommands.help()             - Mostrar esta ayuda
+
+🎯 USUARIOS DE MUESTRA INCLUYE:
+  • admin@maestrocoach.com (admin123456) - Administrador
+  • coach@maestrocoach.com (coach123456) - Coach 
+  • client@maestrocoach.com (client123456) - Cliente
+  • psychologist@maestrocoach.com (psych123456) - Psicólogo
+  • staff@maestrocoach.com (staff123456) - Staff
     `);
   }
 };
@@ -180,9 +231,12 @@ export const debugCommands = {
 if (import.meta.env.DEV) {
   (window as any).debugCommands = debugCommands;
   (window as any).supabase = supabase;
+  (window as any).createSampleUsers = createSampleUsers;
+  (window as any).cleanupSampleUsers = cleanupSampleUsers;
   
   console.log('🔧 Debug commands disponibles en la consola:');
   console.log('👉 Ejecuta debugCommands.help() para ver todos los comandos');
-  console.log('👉 Usuario de prueba: debugCommands.createTestUser()');
+  console.log('👉 Crear usuarios con roles: debugCommands.createSampleUsers()');
+  console.log('👉 Verificar usuarios: debugCommands.checkAllUsers()');
   console.log('👉 Diagnóstico completo: debugCommands.runDiagnostic()');
 }
