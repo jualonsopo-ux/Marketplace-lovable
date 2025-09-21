@@ -2,15 +2,8 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://vrlepgfekleykzirkwoy.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZybGVwZ2Zla2xleWt6aXJrd295Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0MDIyMTgsImV4cCI6MjA3Mzk3ODIxOH0.x5ii2GoOfOQvZN948Pg9PWk2476wBRl1BsXUkAlsh3s";
-
-// Validate environment variables
-if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-  console.error('Missing Supabase environment variables');
-  console.error('VITE_SUPABASE_URL:', SUPABASE_URL ? '✅ Set' : '❌ Missing');
-  console.error('VITE_SUPABASE_ANON_KEY:', SUPABASE_PUBLISHABLE_KEY ? '✅ Set' : '❌ Missing');
-}
+const SUPABASE_URL = "https://cvuqzjwhvcaidrzzrbqf.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2dXF6andodmNhaWRyenpyYnFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0MDU2NDMsImV4cCI6MjA3Mzk4MTY0M30.lV55l-123yoRHyImT6c0w7lFdRpqOTyN6mVNgq36BPg";
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";

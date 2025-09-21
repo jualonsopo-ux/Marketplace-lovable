@@ -14,965 +14,819 @@ export type Database = {
   }
   public: {
     Tables: {
-      activities: {
+      analytics_events: {
         Row: {
-          amount: number | null
+          attributes: Json | null
+          coach_id: string
           created_at: string
-          created_by: string
-          done_at: string | null
-          id: number
-          lead_id: number
-          notes: string | null
-          scheduled_at: string | null
-          type: Database["public"]["Enums"]["activity_type_enum"]
-          updated_at: string
-          workspace_id: number
+          event_name: string
+          id: string
+          webview: Database["public"]["Enums"]["webview_type"] | null
         }
         Insert: {
-          amount?: number | null
+          attributes?: Json | null
+          coach_id: string
           created_at?: string
-          created_by: string
-          done_at?: string | null
-          id?: number
-          lead_id: number
-          notes?: string | null
-          scheduled_at?: string | null
-          type: Database["public"]["Enums"]["activity_type_enum"]
-          updated_at?: string
-          workspace_id: number
+          event_name: string
+          id?: string
+          webview?: Database["public"]["Enums"]["webview_type"] | null
         }
         Update: {
-          amount?: number | null
+          attributes?: Json | null
+          coach_id?: string
           created_at?: string
-          created_by?: string
-          done_at?: string | null
-          id?: number
-          lead_id?: number
-          notes?: string | null
-          scheduled_at?: string | null
-          type?: Database["public"]["Enums"]["activity_type_enum"]
-          updated_at?: string
-          workspace_id?: number
+          event_name?: string
+          id?: string
+          webview?: Database["public"]["Enums"]["webview_type"] | null
         }
         Relationships: [
           {
-            foreignKeyName: "activities_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "leads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "activities_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      activity_logs: {
-        Row: {
-          action: string
-          created_at: string | null
-          details: Json | null
-          id: number
-          ip_address: unknown | null
-          user_agent: string | null
-          user_id: string | null
-        }
-        Insert: {
-          action: string
-          created_at?: string | null
-          details?: Json | null
-          id?: number
-          ip_address?: unknown | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          action?: string
-          created_at?: string | null
-          details?: Json | null
-          id?: number
-          ip_address?: unknown | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      availability_exceptions: {
-        Row: {
-          calendar_id: number
-          created_at: string
-          date: string
-          end_time: string
-          id: number
-          is_open: boolean
-          note: string | null
-          start_time: string
-          updated_at: string
-          workspace_id: number
-        }
-        Insert: {
-          calendar_id: number
-          created_at?: string
-          date: string
-          end_time: string
-          id?: number
-          is_open?: boolean
-          note?: string | null
-          start_time: string
-          updated_at?: string
-          workspace_id: number
-        }
-        Update: {
-          calendar_id?: number
-          created_at?: string
-          date?: string
-          end_time?: string
-          id?: number
-          is_open?: boolean
-          note?: string | null
-          start_time?: string
-          updated_at?: string
-          workspace_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "availability_exceptions_calendar_id_fkey"
-            columns: ["calendar_id"]
-            isOneToOne: false
-            referencedRelation: "calendars"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "availability_exceptions_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      availability_rules: {
-        Row: {
-          active: boolean
-          calendar_id: number
-          created_at: string
-          end_time: string
-          id: number
-          start_time: string
-          updated_at: string
-          weekday: number
-          workspace_id: number
-        }
-        Insert: {
-          active?: boolean
-          calendar_id: number
-          created_at?: string
-          end_time: string
-          id?: number
-          start_time: string
-          updated_at?: string
-          weekday: number
-          workspace_id: number
-        }
-        Update: {
-          active?: boolean
-          calendar_id?: number
-          created_at?: string
-          end_time?: string
-          id?: number
-          start_time?: string
-          updated_at?: string
-          weekday?: number
-          workspace_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "availability_rules_calendar_id_fkey"
-            columns: ["calendar_id"]
-            isOneToOne: false
-            referencedRelation: "calendars"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "availability_rules_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      availability_schedules: {
-        Row: {
-          coach_id: number
-          created_at: string
-          day_of_week: number
-          end_time: string
-          id: number
-          is_active: boolean | null
-          start_time: string
-        }
-        Insert: {
-          coach_id: number
-          created_at?: string
-          day_of_week: number
-          end_time: string
-          id?: number
-          is_active?: boolean | null
-          start_time: string
-        }
-        Update: {
-          coach_id?: number
-          created_at?: string
-          day_of_week?: number
-          end_time?: string
-          id?: number
-          is_active?: boolean | null
-          start_time?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "availability_schedules_coach_id_fkey"
+            foreignKeyName: "analytics_events_coach_id_fkey"
             columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "coach_profiles"
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
+          },
+          {
+            foreignKeyName: "analytics_events_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
             referencedColumns: ["id"]
           },
         ]
       }
-      calendars: {
+      bookings: {
         Row: {
+          calcom_event_id: string | null
+          coach_id: string
           created_at: string
-          id: number
+          email: string
+          id: string
+          marketing_consent: boolean
           name: string
-          timezone: string
-          workspace_id: number
+          offering_id: string | null
+          scheduled_at: string | null
+          scheduled_tz: string | null
+          status: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id: string | null
+          stripe_setup_intent_id: string | null
+          updated_at: string
         }
         Insert: {
+          calcom_event_id?: string | null
+          coach_id: string
           created_at?: string
-          id?: number
-          name?: string
-          timezone?: string
-          workspace_id: number
+          email: string
+          id?: string
+          marketing_consent?: boolean
+          name: string
+          offering_id?: string | null
+          scheduled_at?: string | null
+          scheduled_tz?: string | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id?: string | null
+          stripe_setup_intent_id?: string | null
+          updated_at?: string
         }
         Update: {
+          calcom_event_id?: string | null
+          coach_id?: string
           created_at?: string
-          id?: number
+          email?: string
+          id?: string
+          marketing_consent?: boolean
           name?: string
-          timezone?: string
-          workspace_id?: number
+          offering_id?: string | null
+          scheduled_at?: string | null
+          scheduled_tz?: string | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id?: string | null
+          stripe_setup_intent_id?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "calendars_workspace_id_fkey"
-            columns: ["workspace_id"]
+            foreignKeyName: "bookings_coach_id_fkey"
+            columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "workspaces"
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
+          },
+          {
+            foreignKeyName: "bookings_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_offering_id_fkey"
+            columns: ["offering_id"]
+            isOneToOne: false
+            referencedRelation: "offerings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_offering_id_fkey"
+            columns: ["offering_id"]
+            isOneToOne: false
+            referencedRelation: "public_offerings"
             referencedColumns: ["id"]
           },
         ]
       }
-      categories: {
+      calcom_events: {
         Row: {
-          color: string | null
-          created_at: string
-          description: string | null
-          icon: string | null
-          id: number
-          is_active: boolean | null
-          meta_description: string | null
-          meta_title: string | null
-          name: string
-          slug: string
-          sort_order: number | null
+          data: Json
+          id: string
+          processed: boolean
+          received_at: string
+          type: string
         }
         Insert: {
-          color?: string | null
-          created_at?: string
-          description?: string | null
-          icon?: string | null
-          id?: number
-          is_active?: boolean | null
-          meta_description?: string | null
-          meta_title?: string | null
-          name: string
-          slug: string
-          sort_order?: number | null
+          data: Json
+          id: string
+          processed?: boolean
+          received_at?: string
+          type: string
         }
         Update: {
-          color?: string | null
-          created_at?: string
-          description?: string | null
-          icon?: string | null
-          id?: number
-          is_active?: boolean | null
-          meta_description?: string | null
-          meta_title?: string | null
-          name?: string
-          slug?: string
-          sort_order?: number | null
+          data?: Json
+          id?: string
+          processed?: boolean
+          received_at?: string
+          type?: string
         }
         Relationships: []
       }
-      coach_profiles: {
+      calendar_sources: {
         Row: {
-          average_rating: number | null
-          bio: string
-          coaching_methods: string[] | null
+          coach_id: string
           created_at: string
-          currency: string | null
-          hourly_rate: number
-          id: number
-          instant_booking: boolean | null
-          is_active: boolean | null
-          is_featured: boolean | null
-          languages: string[] | null
-          response_time_hours: number | null
-          specializations: string[] | null
-          title: string
-          total_reviews: number | null
-          total_sessions: number | null
-          updated_at: string
-          user_id: string
-          verification_status: string | null
-          years_experience: number | null
+          external_username: string
+          id: string
+          is_active: boolean
+          provider: string
         }
         Insert: {
-          average_rating?: number | null
-          bio: string
-          coaching_methods?: string[] | null
+          coach_id: string
           created_at?: string
-          currency?: string | null
-          hourly_rate: number
-          id?: number
-          instant_booking?: boolean | null
-          is_active?: boolean | null
-          is_featured?: boolean | null
-          languages?: string[] | null
-          response_time_hours?: number | null
-          specializations?: string[] | null
-          title: string
-          total_reviews?: number | null
-          total_sessions?: number | null
-          updated_at?: string
-          user_id: string
-          verification_status?: string | null
-          years_experience?: number | null
+          external_username: string
+          id?: string
+          is_active?: boolean
+          provider?: string
         }
         Update: {
-          average_rating?: number | null
-          bio?: string
-          coaching_methods?: string[] | null
+          coach_id?: string
           created_at?: string
-          currency?: string | null
-          hourly_rate?: number
-          id?: number
-          instant_booking?: boolean | null
-          is_active?: boolean | null
-          is_featured?: boolean | null
-          languages?: string[] | null
-          response_time_hours?: number | null
-          specializations?: string[] | null
-          title?: string
-          total_reviews?: number | null
-          total_sessions?: number | null
-          updated_at?: string
-          user_id?: string
-          verification_status?: string | null
-          years_experience?: number | null
+          external_username?: string
+          id?: string
+          is_active?: boolean
+          provider?: string
         }
         Relationships: [
           {
-            foreignKeyName: "coach_profiles_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "calendar_sources_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
+          },
+          {
+            foreignKeyName: "calendar_sources_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coach_policies: {
+        Row: {
+          coach_id: string
+          created_at: string
+          quiet_from: string
+          quiet_timezone: string
+          quiet_to: string
+          retention_facturacion: unknown
+          retention_s1_sin_s2: unknown
+        }
+        Insert: {
+          coach_id: string
+          created_at?: string
+          quiet_from?: string
+          quiet_timezone?: string
+          quiet_to?: string
+          retention_facturacion?: unknown
+          retention_s1_sin_s2?: unknown
+        }
+        Update: {
+          coach_id?: string
+          created_at?: string
+          quiet_from?: string
+          quiet_timezone?: string
+          quiet_to?: string
+          retention_facturacion?: unknown
+          retention_s1_sin_s2?: unknown
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_policies_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: true
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
+          },
+          {
+            foreignKeyName: "coach_policies_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: true
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coaches: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string
+          id: string
+          is_published: boolean
+          languages: string[] | null
+          location: string | null
+          profile_id: string
+          role_label: string | null
+          social_instagram: string | null
+          social_tiktok: string | null
+          specialties: string[] | null
+          updated_at: string
+          whatsapp_enabled: boolean
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name: string
+          id?: string
+          is_published?: boolean
+          languages?: string[] | null
+          location?: string | null
+          profile_id: string
+          role_label?: string | null
+          social_instagram?: string | null
+          social_tiktok?: string | null
+          specialties?: string[] | null
+          updated_at?: string
+          whatsapp_enabled?: boolean
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_published?: boolean
+          languages?: string[] | null
+          location?: string | null
+          profile_id?: string
+          role_label?: string | null
+          social_instagram?: string | null
+          social_tiktok?: string | null
+          specialties?: string[] | null
+          updated_at?: string
+          whatsapp_enabled?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coaches_profile_id_fkey"
+            columns: ["profile_id"]
             isOneToOne: true
             referencedRelation: "profiles"
-            referencedColumns: ["user_id"]
+            referencedColumns: ["id"]
           },
         ]
       }
-      lead_tags: {
+      consent_logs: {
         Row: {
-          lead_id: number
-          tag_id: number
+          booking_id: string
+          consent_id: string
+          granted: boolean
+          granted_at: string
+          id: string
         }
         Insert: {
-          lead_id: number
-          tag_id: number
+          booking_id: string
+          consent_id: string
+          granted?: boolean
+          granted_at?: string
+          id?: string
         }
         Update: {
-          lead_id?: number
-          tag_id?: number
+          booking_id?: string
+          consent_id?: string
+          granted?: boolean
+          granted_at?: string
+          id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "lead_tags_lead_id_fkey"
-            columns: ["lead_id"]
+            foreignKeyName: "consent_logs_booking_id_fkey"
+            columns: ["booking_id"]
             isOneToOne: false
-            referencedRelation: "leads"
+            referencedRelation: "bookings"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "lead_tags_tag_id_fkey"
-            columns: ["tag_id"]
+            foreignKeyName: "consent_logs_consent_id_fkey"
+            columns: ["consent_id"]
             isOneToOne: false
-            referencedRelation: "tags"
+            referencedRelation: "consents"
             referencedColumns: ["id"]
           },
         ]
       }
-      leads: {
+      consents: {
         Row: {
-          amount: number | null
-          channel: Database["public"]["Enums"]["lead_channel_enum"] | null
+          id: string
+          legal_base: Database["public"]["Enums"]["consent_base"]
+          scope: string[]
+        }
+        Insert: {
+          id: string
+          legal_base: Database["public"]["Enums"]["consent_base"]
+          scope: string[]
+        }
+        Update: {
+          id?: string
+          legal_base?: Database["public"]["Enums"]["consent_base"]
+          scope?: string[]
+        }
+        Relationships: []
+      }
+      faq: {
+        Row: {
+          answer: string
+          coach_id: string
           created_at: string
-          due_at: string | null
-          email: string | null
-          full_name: string
-          id: number
-          last_contact_at: string | null
-          next_step: string | null
-          owner_id: string
-          phone: string | null
-          priority: Database["public"]["Enums"]["priority_enum"]
-          score: number | null
-          stage: Database["public"]["Enums"]["lead_stage_enum"]
+          id: string
+          position: number
+          question: string
+        }
+        Insert: {
+          answer: string
+          coach_id: string
+          created_at?: string
+          id?: string
+          position?: number
+          question: string
+        }
+        Update: {
+          answer?: string
+          coach_id?: string
+          created_at?: string
+          id?: string
+          position?: number
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faq_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
+          },
+          {
+            foreignKeyName: "faq_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feature_flags: {
+        Row: {
+          coach_id: string
+          id: string
+          key: string
           updated_at: string
-          workspace_id: number
+          value: string
         }
         Insert: {
-          amount?: number | null
-          channel?: Database["public"]["Enums"]["lead_channel_enum"] | null
-          created_at?: string
-          due_at?: string | null
-          email?: string | null
-          full_name: string
-          id?: number
-          last_contact_at?: string | null
-          next_step?: string | null
-          owner_id: string
-          phone?: string | null
-          priority?: Database["public"]["Enums"]["priority_enum"]
-          score?: number | null
-          stage?: Database["public"]["Enums"]["lead_stage_enum"]
+          coach_id: string
+          id?: string
+          key: string
           updated_at?: string
-          workspace_id: number
+          value: string
         }
         Update: {
-          amount?: number | null
-          channel?: Database["public"]["Enums"]["lead_channel_enum"] | null
-          created_at?: string
-          due_at?: string | null
-          email?: string | null
-          full_name?: string
-          id?: number
-          last_contact_at?: string | null
-          next_step?: string | null
-          owner_id?: string
-          phone?: string | null
-          priority?: Database["public"]["Enums"]["priority_enum"]
-          score?: number | null
-          stage?: Database["public"]["Enums"]["lead_stage_enum"]
+          coach_id?: string
+          id?: string
+          key?: string
           updated_at?: string
-          workspace_id?: number
+          value?: string
         }
         Relationships: [
           {
-            foreignKeyName: "leads_workspace_id_fkey"
-            columns: ["workspace_id"]
+            foreignKeyName: "feature_flags_coach_id_fkey"
+            columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "workspaces"
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
+          },
+          {
+            foreignKeyName: "feature_flags_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
             referencedColumns: ["id"]
           },
         ]
       }
-      members: {
+      offerings: {
         Row: {
+          badge: string | null
+          coach_id: string
           created_at: string
-          id: number
-          role: string
-          user_id: string
-          workspace_id: number
+          currency: Database["public"]["Enums"]["currency"]
+          duration_min: number
+          id: string
+          is_active: boolean
+          position: number
+          price: number | null
+          title: string
+          type: Database["public"]["Enums"]["offering_type"]
         }
         Insert: {
+          badge?: string | null
+          coach_id: string
           created_at?: string
-          id?: number
-          role?: string
-          user_id: string
-          workspace_id: number
+          currency?: Database["public"]["Enums"]["currency"]
+          duration_min: number
+          id?: string
+          is_active?: boolean
+          position?: number
+          price?: number | null
+          title: string
+          type: Database["public"]["Enums"]["offering_type"]
         }
         Update: {
+          badge?: string | null
+          coach_id?: string
           created_at?: string
-          id?: number
-          role?: string
-          user_id?: string
-          workspace_id?: number
+          currency?: Database["public"]["Enums"]["currency"]
+          duration_min?: number
+          id?: string
+          is_active?: boolean
+          position?: number
+          price?: number | null
+          title?: string
+          type?: Database["public"]["Enums"]["offering_type"]
         }
         Relationships: [
           {
-            foreignKeyName: "members_workspace_id_fkey"
-            columns: ["workspace_id"]
+            foreignKeyName: "offerings_coach_id_fkey"
+            columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "workspaces"
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
+          },
+          {
+            foreignKeyName: "offerings_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
             referencedColumns: ["id"]
           },
         ]
       }
       profiles: {
         Row: {
-          avatar_url: string | null
-          bio: string | null
+          auth_user_id: string | null
           created_at: string
-          display_name: string | null
-          email_notifications: boolean
+          email: string
+          full_name: string
+          handle: string
           id: string
-          language: string
-          marketing_emails: boolean
-          phone: string | null
-          push_notifications: boolean
-          role: Database["public"]["Enums"]["user_role_enum"]
-          status: string
-          timezone: string
+          is_active: boolean
+          role: Database["public"]["Enums"]["role"]
           updated_at: string
-          user_id: string
         }
         Insert: {
-          avatar_url?: string | null
-          bio?: string | null
+          auth_user_id?: string | null
           created_at?: string
-          display_name?: string | null
-          email_notifications?: boolean
+          email: string
+          full_name: string
+          handle: string
           id?: string
-          language?: string
-          marketing_emails?: boolean
-          phone?: string | null
-          push_notifications?: boolean
-          role?: Database["public"]["Enums"]["user_role_enum"]
-          status?: string
-          timezone?: string
+          is_active?: boolean
+          role?: Database["public"]["Enums"]["role"]
           updated_at?: string
-          user_id: string
         }
         Update: {
-          avatar_url?: string | null
-          bio?: string | null
+          auth_user_id?: string | null
           created_at?: string
-          display_name?: string | null
-          email_notifications?: boolean
+          email?: string
+          full_name?: string
+          handle?: string
           id?: string
-          language?: string
-          marketing_emails?: boolean
-          phone?: string | null
-          push_notifications?: boolean
-          role?: Database["public"]["Enums"]["user_role_enum"]
-          status?: string
-          timezone?: string
+          is_active?: boolean
+          role?: Database["public"]["Enums"]["role"]
           updated_at?: string
-          user_id?: string
         }
         Relationships: []
       }
-      reviews: {
+      reels: {
         Row: {
-          client_id: string
-          coach_id: number
-          comment: string | null
+          coach_id: string
           created_at: string
-          id: number
-          is_public: boolean | null
-          is_verified: boolean | null
-          rating: number
-          session_id: number
-          tags: string[] | null
-          updated_at: string
+          duration_seconds: number | null
+          headline: string | null
+          id: string
+          is_featured: boolean
+          poster_url: string | null
+          transcript: string | null
+          video_url: string
         }
         Insert: {
-          client_id: string
-          coach_id: number
-          comment?: string | null
+          coach_id: string
           created_at?: string
-          id?: number
-          is_public?: boolean | null
-          is_verified?: boolean | null
-          rating: number
-          session_id: number
-          tags?: string[] | null
-          updated_at?: string
+          duration_seconds?: number | null
+          headline?: string | null
+          id?: string
+          is_featured?: boolean
+          poster_url?: string | null
+          transcript?: string | null
+          video_url: string
         }
         Update: {
-          client_id?: string
-          coach_id?: number
-          comment?: string | null
+          coach_id?: string
           created_at?: string
-          id?: number
-          is_public?: boolean | null
-          is_verified?: boolean | null
-          rating?: number
-          session_id?: number
-          tags?: string[] | null
-          updated_at?: string
+          duration_seconds?: number | null
+          headline?: string | null
+          id?: string
+          is_featured?: boolean
+          poster_url?: string | null
+          transcript?: string | null
+          video_url?: string
         }
         Relationships: [
           {
-            foreignKeyName: "reviews_client_id_fkey"
-            columns: ["client_id"]
+            foreignKeyName: "reels_coach_id_fkey"
+            columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["user_id"]
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
+          },
+          {
+            foreignKeyName: "reels_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          author_name: string | null
+          coach_id: string
+          created_at: string
+          id: string
+          published_at: string | null
+          rating: number
+          text: string | null
+        }
+        Insert: {
+          author_name?: string | null
+          coach_id: string
+          created_at?: string
+          id?: string
+          published_at?: string | null
+          rating: number
+          text?: string | null
+        }
+        Update: {
+          author_name?: string | null
+          coach_id?: string
+          created_at?: string
+          id?: string
+          published_at?: string | null
+          rating?: number
+          text?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
           },
           {
             foreignKeyName: "reviews_coach_id_fkey"
             columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "coach_profiles"
+            referencedRelation: "coaches"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: true
-            referencedRelation: "sessions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: true
-            referencedRelation: "view_calendar_week"
-            referencedColumns: ["session_id"]
           },
         ]
       }
-      session_reminders: {
+      seo_pages: {
         Row: {
-          created_at: string
-          id: number
-          method: string
-          send_at: string
-          sent_at: string | null
-          session_id: number
-          status: string | null
-          workspace_id: number
+          canonical_url: string | null
+          coach_id: string
+          id: string
+          meta_description: string | null
+          meta_title: string
+          noindex: boolean
+          og_image_url: string | null
+          route: string
         }
         Insert: {
-          created_at?: string
-          id?: number
-          method?: string
-          send_at: string
-          sent_at?: string | null
-          session_id: number
-          status?: string | null
-          workspace_id: number
+          canonical_url?: string | null
+          coach_id: string
+          id?: string
+          meta_description?: string | null
+          meta_title: string
+          noindex?: boolean
+          og_image_url?: string | null
+          route: string
         }
         Update: {
-          created_at?: string
-          id?: number
-          method?: string
-          send_at?: string
-          sent_at?: string | null
-          session_id?: number
-          status?: string | null
-          workspace_id?: number
+          canonical_url?: string | null
+          coach_id?: string
+          id?: string
+          meta_description?: string | null
+          meta_title?: string
+          noindex?: boolean
+          og_image_url?: string | null
+          route?: string
         }
         Relationships: [
           {
-            foreignKeyName: "session_reminders_session_id_fkey"
-            columns: ["session_id"]
+            foreignKeyName: "seo_pages_coach_id_fkey"
+            columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "sessions"
-            referencedColumns: ["id"]
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
           },
           {
-            foreignKeyName: "session_reminders_session_id_fkey"
-            columns: ["session_id"]
+            foreignKeyName: "seo_pages_coach_id_fkey"
+            columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "view_calendar_week"
-            referencedColumns: ["session_id"]
-          },
-          {
-            foreignKeyName: "session_reminders_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
+            referencedRelation: "coaches"
             referencedColumns: ["id"]
           },
         ]
       }
-      sessions: {
+      showup_stats: {
         Row: {
-          calendar_id: number
-          cancellation_reason: string | null
-          cancelled_at: string | null
-          client_notes: string | null
-          client_profile_id: string | null
-          coach_notes: string | null
-          coach_profile_id: number | null
+          coach_id: string
           created_at: string
-          created_by: string
-          description: string | null
-          ends_at: string
-          id: number
-          lead_id: number | null
-          location: string | null
-          meeting_id: string | null
-          meeting_link: string | null
-          notes: string | null
-          price_eur: number | null
-          session_recording: string | null
-          session_type: string | null
-          starts_at: string
-          status: Database["public"]["Enums"]["session_status_enum"]
-          title: string | null
-          type: Database["public"]["Enums"]["session_type_enum"]
-          updated_at: string
-          workspace_id: number
+          id: string
+          period: unknown
+          showup_percent: number
         }
         Insert: {
-          calendar_id: number
-          cancellation_reason?: string | null
-          cancelled_at?: string | null
-          client_notes?: string | null
-          client_profile_id?: string | null
-          coach_notes?: string | null
-          coach_profile_id?: number | null
+          coach_id: string
           created_at?: string
-          created_by: string
-          description?: string | null
-          ends_at: string
-          id?: number
-          lead_id?: number | null
-          location?: string | null
-          meeting_id?: string | null
-          meeting_link?: string | null
-          notes?: string | null
-          price_eur?: number | null
-          session_recording?: string | null
-          session_type?: string | null
-          starts_at: string
-          status?: Database["public"]["Enums"]["session_status_enum"]
-          title?: string | null
-          type: Database["public"]["Enums"]["session_type_enum"]
-          updated_at?: string
-          workspace_id: number
+          id?: string
+          period: unknown
+          showup_percent: number
         }
         Update: {
-          calendar_id?: number
-          cancellation_reason?: string | null
-          cancelled_at?: string | null
-          client_notes?: string | null
-          client_profile_id?: string | null
-          coach_notes?: string | null
-          coach_profile_id?: number | null
+          coach_id?: string
           created_at?: string
-          created_by?: string
-          description?: string | null
-          ends_at?: string
-          id?: number
-          lead_id?: number | null
-          location?: string | null
-          meeting_id?: string | null
-          meeting_link?: string | null
-          notes?: string | null
-          price_eur?: number | null
-          session_recording?: string | null
-          session_type?: string | null
-          starts_at?: string
-          status?: Database["public"]["Enums"]["session_status_enum"]
-          title?: string | null
-          type?: Database["public"]["Enums"]["session_type_enum"]
-          updated_at?: string
-          workspace_id?: number
+          id?: string
+          period?: unknown
+          showup_percent?: number
         }
         Relationships: [
           {
-            foreignKeyName: "sessions_calendar_id_fkey"
-            columns: ["calendar_id"]
+            foreignKeyName: "showup_stats_coach_id_fkey"
+            columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "calendars"
-            referencedColumns: ["id"]
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
           },
           {
-            foreignKeyName: "sessions_client_profile_id_fkey"
-            columns: ["client_profile_id"]
+            foreignKeyName: "showup_stats_coach_id_fkey"
+            columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "sessions_coach_profile_id_fkey"
-            columns: ["coach_profile_id"]
-            isOneToOne: false
-            referencedRelation: "coach_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sessions_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "leads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sessions_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
+            referencedRelation: "coaches"
             referencedColumns: ["id"]
           },
         ]
       }
-      tags: {
+      stripe_events: {
         Row: {
-          created_at: string
-          id: number
-          name: string
-          workspace_id: number
+          data: Json
+          id: string
+          processed: boolean
+          received_at: string
+          type: string
         }
         Insert: {
-          created_at?: string
-          id?: number
-          name: string
-          workspace_id: number
+          data: Json
+          id: string
+          processed?: boolean
+          received_at?: string
+          type: string
         }
         Update: {
-          created_at?: string
-          id?: number
-          name?: string
-          workspace_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tags_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      workspaces: {
-        Row: {
-          created_at: string
-          id: number
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          name: string
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          name?: string
+          data?: Json
+          id?: string
+          processed?: boolean
+          received_at?: string
+          type?: string
         }
         Relationships: []
       }
     }
     Views: {
-      platform_stats: {
+      coach_rating: {
         Row: {
-          active_coaches: number | null
-          completed_sessions: number | null
-          total_clients: number | null
-          total_coaches: number | null
-          total_revenue: number | null
-          total_sessions: number | null
-          total_users: number | null
+          coach_id: string | null
+          rating_avg: number | null
+          rating_count: number | null
         }
         Relationships: []
       }
-      view_calendar_week: {
+      coach_showup: {
         Row: {
-          calendar_id: number | null
-          ends_at: string | null
-          lead_id: number | null
-          lead_name: string | null
-          notes: string | null
-          price_eur: number | null
-          session_id: number | null
-          starts_at: string | null
-          status: Database["public"]["Enums"]["session_status_enum"] | null
-          type: Database["public"]["Enums"]["session_type_enum"] | null
-          workspace_id: number | null
+          coach_id: string | null
+          showup_percent: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "sessions_calendar_id_fkey"
-            columns: ["calendar_id"]
+            foreignKeyName: "bookings_coach_id_fkey"
+            columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "calendars"
-            referencedColumns: ["id"]
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
           },
           {
-            foreignKeyName: "sessions_lead_id_fkey"
-            columns: ["lead_id"]
+            foreignKeyName: "bookings_coach_id_fkey"
+            columns: ["coach_id"]
             isOneToOne: false
-            referencedRelation: "leads"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sessions_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
+            referencedRelation: "coaches"
             referencedColumns: ["id"]
           },
         ]
       }
-      view_quick_availability: {
+      public_offerings: {
         Row: {
-          calendar_id: number | null
-          day: string | null
-          end_time: string | null
-          start_time: string | null
-          workspace_id: number | null
+          badge: string | null
+          coach_id: string | null
+          created_at: string | null
+          currency: Database["public"]["Enums"]["currency"] | null
+          duration_min: number | null
+          id: string | null
+          is_active: boolean | null
+          position: number | null
+          price: number | null
+          title: string | null
+          type: Database["public"]["Enums"]["offering_type"] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "offerings_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coach_rating"
+            referencedColumns: ["coach_id"]
+          },
+          {
+            foreignKeyName: "offerings_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
-      create_admin_user: {
-        Args: { user_email: string }
-        Returns: undefined
-      }
-      get_current_user_role: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      [_ in never]: never
     }
     Enums: {
-      activity_type_enum:
-        | "S1"
-        | "S2"
-        | "Pago"
-        | "Nota"
-        | "Email"
-        | "Llamada"
-        | "Reunión"
-        | "Mensaje"
-      lead_channel_enum:
-        | "instagram"
-        | "google_ads"
-        | "referido"
-        | "orgánico"
-        | "otros"
-      lead_stage_enum:
-        | "S1 reservado"
-        | "S1 hecho"
-        | "S2 reservado"
-        | "Propuesta"
-        | "Ganado"
-        | "Perdido"
-      priority_enum: "baja" | "media" | "alta" | "critica"
-      session_status_enum: "scheduled" | "completed" | "cancelled" | "no_show"
-      session_type_enum: "S1" | "S2" | "S3"
-      Status: "Not started" | "Started" | "Completed"
-      user_role_enum: "client" | "coach" | "admin"
+      booking_status:
+        | "pending"
+        | "confirmed"
+        | "canceled"
+        | "no_show"
+        | "completed"
+      consent_base: "Art. 6.1.a" | "Art. 6.1.b"
+      currency: "EUR" | "USD" | "GBP"
+      flag_state: "on" | "off"
+      offering_type: "S1" | "S2" | "S3" | "package"
+      role: "coach" | "psychologist" | "admin" | "staff"
+      webview_type: "instagram" | "tiktok" | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1100,36 +954,19 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      activity_type_enum: [
-        "S1",
-        "S2",
-        "Pago",
-        "Nota",
-        "Email",
-        "Llamada",
-        "Reunión",
-        "Mensaje",
+      booking_status: [
+        "pending",
+        "confirmed",
+        "canceled",
+        "no_show",
+        "completed",
       ],
-      lead_channel_enum: [
-        "instagram",
-        "google_ads",
-        "referido",
-        "orgánico",
-        "otros",
-      ],
-      lead_stage_enum: [
-        "S1 reservado",
-        "S1 hecho",
-        "S2 reservado",
-        "Propuesta",
-        "Ganado",
-        "Perdido",
-      ],
-      priority_enum: ["baja", "media", "alta", "critica"],
-      session_status_enum: ["scheduled", "completed", "cancelled", "no_show"],
-      session_type_enum: ["S1", "S2", "S3"],
-      Status: ["Not started", "Started", "Completed"],
-      user_role_enum: ["client", "coach", "admin"],
+      consent_base: ["Art. 6.1.a", "Art. 6.1.b"],
+      currency: ["EUR", "USD", "GBP"],
+      flag_state: ["on", "off"],
+      offering_type: ["S1", "S2", "S3", "package"],
+      role: ["coach", "psychologist", "admin", "staff"],
+      webview_type: ["instagram", "tiktok", "other"],
     },
   },
 } as const
