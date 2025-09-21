@@ -10,7 +10,7 @@ type UserProfile = {
   avatar_url?: string;
   bio?: string;
   phone?: string;
-  role: string;
+  role: 'client' | 'coach' | 'admin';
   status: string;
   timezone: string;
   language: string;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,20 +6,17 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
   ArrowRight,
-  Shield,
   Users,
   Calendar,
   BarChart3,
   CheckCircle,
   Star,
   Target,
-  Clock,
   LogIn,
   UserPlus,
   Loader2,
   Sparkles
 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
 // Features data
@@ -70,77 +67,44 @@ const testimonials = [
 
 export function HomePage() {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [authError, setAuthError] = useState<string | null>(null);
+  const { user, loading, profile, isAuthenticated } = useAuth();
 
-  // Check authentication and redirect accordingly
+  // Handle redirection based on authentication status
   useEffect(() => {
-    const checkAuthAndRedirect = async () => {
-      try {
-        setIsCheckingAuth(true);
-        setAuthError(null);
+    // Wait for auth to finish loading
+    if (loading) return;
 
-        // Check if there's an authenticated user
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Auth check error:', error);
-          setAuthError(error.message);
-          setIsCheckingAuth(false);
-          return;
-        }
-
-        if (session?.user) {
-          // User is authenticated, get their profile to determine redirect
-          try {
-            const { data: profile, error: profileError } = await supabase
-              .from('profiles')
-              .select('role')
-              .eq('user_id', session.user.id)
-              .single();
-
-            if (profileError) {
-              console.log('Profile not found, redirecting to complete profile');
-              navigate('/auth');
-              return;
-            }
-
-            // Redirect based on role
-            switch (profile?.role) {
-              case 'coach':
-                navigate('/coach/dashboard');
-                break;
-              case 'client':
-                navigate('/client/dashboard');
-                break;
-              case 'admin':
-                navigate('/admin/dashboard');
-                break;
-              default:
-                navigate('/auth');
-            }
-          } catch (profileError) {
-            console.error('Error fetching profile:', profileError);
-            setAuthError('Error verificando perfil');
-          }
-        }
-      } catch (error: any) {
-        console.error('Unexpected auth error:', error);
-        setAuthError(error.message || 'Error de autenticación');
-      } finally {
-        setIsCheckingAuth(false);
+    // If user is authenticated and has a profile, redirect to appropriate dashboard
+    if (isAuthenticated && user && profile) {
+      console.log('Redirecting authenticated user with role:', profile.role);
+      switch (profile.role) {
+        case 'coach':
+          navigate('/coach/dashboard');
+          break;
+        case 'client':
+          navigate('/client/dashboard');
+          break;
+        case 'admin':
+          navigate('/admin/dashboard');
+          break;
+        default:
+          console.log('Unknown role, redirecting to auth');
+          navigate('/auth');
       }
-    };
-
-    // Only check auth if not already loading from context
-    if (!loading) {
-      checkAuthAndRedirect();
     }
-  }, [navigate, loading]);
+    // If user is authenticated but no profile, redirect to complete setup
+    else if (isAuthenticated && user && !profile) {
+      console.log('User authenticated but no profile, redirecting to auth');
+      navigate('/auth');
+    }
+    // If not authenticated, show landing page (no redirect needed)
+    else {
+      console.log('User not authenticated, showing landing page');
+    }
+  }, [loading, isAuthenticated, user, profile, navigate]);
 
-  // Show loading while checking authentication
-  if (loading || isCheckingAuth) {
+  // Show loading while authentication is being verified
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Card className="w-full max-w-md">
@@ -170,32 +134,6 @@ export function HomePage() {
     );
   }
 
-  // Show error if auth check failed
-  if (authError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-destructive">Error de Conexión</CardTitle>
-            <CardDescription>
-              No se pudo verificar el estado de autenticación
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground text-center">{authError}</p>
-            <div className="flex space-x-2">
-              <Button onClick={() => window.location.reload()} className="flex-1">
-                Reintentar
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/login')} className="flex-1">
-                Ir al Login
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   // Show landing page for non-authenticated users
   return (
