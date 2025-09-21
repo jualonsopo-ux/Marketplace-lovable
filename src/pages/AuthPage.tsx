@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2 } from 'lucide-react';
 
 const AuthPage = () => {
@@ -14,7 +15,7 @@ const AuthPage = () => {
   
   // Form states
   const [signInData, setSignInData] = useState({ email: '', password: '' });
-  const [signUpData, setSignUpData] = useState({ email: '', password: '', displayName: '', confirmPassword: '' });
+  const [signUpData, setSignUpData] = useState({ email: '', password: '', displayName: '', confirmPassword: '', role: 'client' });
 
   // Redirect if already authenticated
   if (user && !loading) {
@@ -52,11 +53,11 @@ const AuthPage = () => {
     
     setIsLoading(true);
     
-    const { error } = await signUp(signUpData.email, signUpData.password, signUpData.displayName);
+    const { error } = await signUp(signUpData.email, signUpData.password, signUpData.displayName, signUpData.role);
     
     if (!error) {
       // Reset form on success
-      setSignUpData({ email: '', password: '', displayName: '', confirmPassword: '' });
+      setSignUpData({ email: '', password: '', displayName: '', confirmPassword: '', role: 'client' });
     }
     
     setIsLoading(false);
@@ -166,6 +167,25 @@ const AuthPage = () => {
                     onChange={(e) => setSignUpData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                     required
                   />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="signup-role">Tipo de Usuario</Label>
+                  <Select 
+                    value={signUpData.role} 
+                    onValueChange={(value) => setSignUpData(prev => ({ ...prev, role: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona tu rol" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="client">Cliente</SelectItem>
+                      <SelectItem value="coach">Coach</SelectItem>
+                      <SelectItem value="psychologist">Psicólogo</SelectItem>
+                      <SelectItem value="staff">Staff</SelectItem>
+                      <SelectItem value="admin">Administrador</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <Button type="submit" className="w-full" disabled={isLoading}>

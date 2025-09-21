@@ -21,7 +21,7 @@ interface AuthContextType {
   profile: UserProfile | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signUp: (email: string, password: string, displayName?: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, displayName?: string, role?: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   isAuthenticated: boolean;
   isCoach: boolean;
@@ -133,7 +133,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signUp = async (email: string, password: string, displayName?: string) => {
+  const signUp = async (email: string, password: string, displayName?: string, role?: string) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
@@ -144,6 +144,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           emailRedirectTo: redirectUrl,
           data: {
             full_name: displayName || email,
+            role: role || 'client',
           }
         }
       });
