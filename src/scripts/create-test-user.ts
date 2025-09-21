@@ -54,7 +54,7 @@ export async function createTestUser() {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('auth_user_id', authData.user.id)
+        .eq('user_id', authData.user.id)
         .single()
 
       if (profileError && profileError.code === 'PGRST116') {
@@ -64,7 +64,7 @@ export async function createTestUser() {
         const { error: insertError } = await supabase
           .from('profiles')
           .insert({
-            auth_user_id: authData.user.id,
+            user_id: authData.user.id,
             full_name: 'Coach Test',
             handle: 'coach-test',
             email: authData.user.email || 'coach@test.com',
@@ -89,7 +89,7 @@ export async function createTestUser() {
           const { error: updateError } = await supabase
             .from('profiles')
             .update({ role: 'coach' })
-            .eq('auth_user_id', authData.user.id)
+            .eq('user_id', authData.user.id)
             
           if (updateError) {
             console.error('❌ Error actualizando rol:', updateError)
@@ -177,7 +177,7 @@ export async function cleanupTestUser() {
       await supabase
         .from('profiles')
         .delete()
-        .eq('auth_user_id', loginData.user.id)
+        .eq('user_id', loginData.user.id)
       
       console.log('✅ Datos del usuario de prueba eliminados')
     }

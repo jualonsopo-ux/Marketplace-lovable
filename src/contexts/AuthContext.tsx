@@ -5,11 +5,11 @@ import { toast } from '@/hooks/use-toast';
 
 type UserProfile = {
   id: string;
-  auth_user_id: string;
+  user_id: string;
   full_name: string;
   handle: string;
   email: string;
-  role: 'coach' | 'psychologist' | 'admin' | 'staff';
+  role: 'coach' | 'psychologist' | 'admin' | 'staff' | 'client';
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -50,7 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('auth_user_id', userId)
+        .eq('user_id', userId)
         .maybeSingle();
       
       if (error) {

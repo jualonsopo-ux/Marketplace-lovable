@@ -6,11 +6,11 @@ import { toast } from '@/hooks/use-toast';
 // User profile type matching Supabase profiles table
 interface UserProfile {
   id: string;
-  auth_user_id: string;
+  user_id: string;
   full_name: string;
   handle: string;
   email: string;
-  role: 'coach' | 'psychologist' | 'admin' | 'staff';
+  role: 'coach' | 'psychologist' | 'admin' | 'staff' | 'client';
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -27,7 +27,7 @@ export function useCurrentUserProfile() {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('auth_user_id', authUser.id)
+        .eq('user_id', authUser.id)
         .single();
       
       if (error) throw error;
@@ -49,7 +49,7 @@ export function useUpdateUserProfile() {
       const { data: updatedProfile, error } = await supabase
         .from('profiles')
         .update(data)
-        .eq('auth_user_id', authUser.id)
+        .eq('user_id', authUser.id)
         .select()
         .single();
       

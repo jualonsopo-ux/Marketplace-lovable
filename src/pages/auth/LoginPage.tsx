@@ -100,7 +100,7 @@ export function LoginPage() {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('auth_user_id', authData.user.id)
+        .eq('user_id', authData.user.id)
         .single()
 
       if (profileError) {
