@@ -1109,6 +1109,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_current_user_profile_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       update_user_role: {
         Args: { new_role: string; user_email: string }
         Returns: undefined
