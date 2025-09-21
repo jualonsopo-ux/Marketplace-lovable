@@ -292,6 +292,7 @@ export type Database = {
           is_active: boolean | null
           is_featured: boolean | null
           languages: string[] | null
+          new_id: string | null
           response_time_hours: number | null
           specializations: string[] | null
           title: string
@@ -314,6 +315,7 @@ export type Database = {
           is_active?: boolean | null
           is_featured?: boolean | null
           languages?: string[] | null
+          new_id?: string | null
           response_time_hours?: number | null
           specializations?: string[] | null
           title: string
@@ -336,6 +338,7 @@ export type Database = {
           is_active?: boolean | null
           is_featured?: boolean | null
           languages?: string[] | null
+          new_id?: string | null
           response_time_hours?: number | null
           specializations?: string[] | null
           title?: string
@@ -866,6 +869,8 @@ export type Database = {
           id: number
           location: string | null
           meeting_link: string | null
+          new_coach_profile_id: string | null
+          new_id: string | null
           notes: string | null
           price_eur: number | null
           session_type: string | null
@@ -891,6 +896,8 @@ export type Database = {
           id?: never
           location?: string | null
           meeting_link?: string | null
+          new_coach_profile_id?: string | null
+          new_id?: string | null
           notes?: string | null
           price_eur?: number | null
           session_type?: string | null
@@ -916,6 +923,8 @@ export type Database = {
           id?: never
           location?: string | null
           meeting_link?: string | null
+          new_coach_profile_id?: string | null
+          new_id?: string | null
           notes?: string | null
           price_eur?: number | null
           session_type?: string | null
@@ -932,20 +941,6 @@ export type Database = {
             columns: ["calendar_id"]
             isOneToOne: false
             referencedRelation: "calendars"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sessions_client_profile_id_fkey"
-            columns: ["client_profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "sessions_coach_profile_id_fkey"
-            columns: ["coach_profile_id"]
-            isOneToOne: false
-            referencedRelation: "coach_profiles"
             referencedColumns: ["id"]
           },
           {
