@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      activities: {
+        Row: {
+          amount: number | null
+          created_at: string
+          created_by: string
+          done_at: string | null
+          id: number
+          lead_id: number
+          notes: string | null
+          scheduled_at: string | null
+          type: Database["public"]["Enums"]["activity_type_enum"]
+          updated_at: string
+          workspace_id: number
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          created_by: string
+          done_at?: string | null
+          id?: never
+          lead_id: number
+          notes?: string | null
+          scheduled_at?: string | null
+          type: Database["public"]["Enums"]["activity_type_enum"]
+          updated_at?: string
+          workspace_id: number
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          created_by?: string
+          done_at?: string | null
+          id?: never
+          lead_id?: number
+          notes?: string | null
+          scheduled_at?: string | null
+          type?: Database["public"]["Enums"]["activity_type_enum"]
+          updated_at?: string
+          workspace_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activities_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       analytics_events: {
         Row: {
           attributes: Json | null
@@ -556,6 +613,101 @@ export type Database = {
           },
         ]
       }
+      lead_tags: {
+        Row: {
+          lead_id: number
+          tag_id: number
+        }
+        Insert: {
+          lead_id: number
+          tag_id: number
+        }
+        Update: {
+          lead_id?: number
+          tag_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_tags_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          amount: number | null
+          channel: Database["public"]["Enums"]["lead_channel_enum"] | null
+          created_at: string
+          due_at: string | null
+          email: string | null
+          full_name: string
+          id: number
+          last_contact_at: string | null
+          next_step: string | null
+          owner_id: string
+          phone: string | null
+          priority: Database["public"]["Enums"]["priority_enum"]
+          score: number | null
+          stage: Database["public"]["Enums"]["lead_stage_enum"]
+          updated_at: string
+          workspace_id: number
+        }
+        Insert: {
+          amount?: number | null
+          channel?: Database["public"]["Enums"]["lead_channel_enum"] | null
+          created_at?: string
+          due_at?: string | null
+          email?: string | null
+          full_name: string
+          id?: never
+          last_contact_at?: string | null
+          next_step?: string | null
+          owner_id: string
+          phone?: string | null
+          priority?: Database["public"]["Enums"]["priority_enum"]
+          score?: number | null
+          stage?: Database["public"]["Enums"]["lead_stage_enum"]
+          updated_at?: string
+          workspace_id: number
+        }
+        Update: {
+          amount?: number | null
+          channel?: Database["public"]["Enums"]["lead_channel_enum"] | null
+          created_at?: string
+          due_at?: string | null
+          email?: string | null
+          full_name?: string
+          id?: never
+          last_contact_at?: string | null
+          next_step?: string | null
+          owner_id?: string
+          phone?: string | null
+          priority?: Database["public"]["Enums"]["priority_enum"]
+          score?: number | null
+          stage?: Database["public"]["Enums"]["lead_stage_enum"]
+          updated_at?: string
+          workspace_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lib_screen_json: {
         Row: {
           app: Json
@@ -579,6 +731,38 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      members: {
+        Row: {
+          created_at: string
+          id: number
+          role: string
+          user_id: string
+          workspace_id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          role?: string
+          user_id: string
+          workspace_id: number
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          role?: string
+          user_id?: string
+          workspace_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "members_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       offerings: {
         Row: {
@@ -1013,6 +1197,35 @@ export type Database = {
         }
         Relationships: []
       }
+      tags: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          workspace_id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          name: string
+          workspace_id: number
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          name?: string
+          workspace_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tags_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workspaces: {
         Row: {
           created_at: string
@@ -1127,6 +1340,7 @@ export type Database = {
       }
     }
     Enums: {
+      activity_type_enum: "call" | "email" | "meeting" | "note" | "task"
       booking_status:
         | "pending"
         | "confirmed"
@@ -1136,7 +1350,22 @@ export type Database = {
       consent_base: "Art. 6.1.a" | "Art. 6.1.b"
       currency: "EUR" | "USD" | "GBP"
       flag_state: "on" | "off"
+      lead_channel_enum:
+        | "web"
+        | "phone"
+        | "email"
+        | "social"
+        | "referral"
+        | "organic"
+      lead_stage_enum:
+        | "S1 reservado"
+        | "S1 realizado"
+        | "S2 vendido"
+        | "S2 realizado"
+        | "cerrado ganado"
+        | "cerrado perdido"
       offering_type: "S1" | "S2" | "S3" | "package"
+      priority_enum: "baja" | "media" | "alta" | "urgente"
       role: "coach" | "psychologist" | "admin" | "staff"
       session_status_enum:
         | "scheduled"
@@ -1275,6 +1504,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      activity_type_enum: ["call", "email", "meeting", "note", "task"],
       booking_status: [
         "pending",
         "confirmed",
@@ -1285,7 +1515,24 @@ export const Constants = {
       consent_base: ["Art. 6.1.a", "Art. 6.1.b"],
       currency: ["EUR", "USD", "GBP"],
       flag_state: ["on", "off"],
+      lead_channel_enum: [
+        "web",
+        "phone",
+        "email",
+        "social",
+        "referral",
+        "organic",
+      ],
+      lead_stage_enum: [
+        "S1 reservado",
+        "S1 realizado",
+        "S2 vendido",
+        "S2 realizado",
+        "cerrado ganado",
+        "cerrado perdido",
+      ],
       offering_type: ["S1", "S2", "S3", "package"],
+      priority_enum: ["baja", "media", "alta", "urgente"],
       role: ["coach", "psychologist", "admin", "staff"],
       session_status_enum: [
         "scheduled",
