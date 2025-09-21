@@ -18,6 +18,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 // Features data
 const features = [
@@ -142,6 +143,32 @@ export function HomePage() {
       <section className="relative py-20 px-4 bg-gradient-to-b from-primary/5 to-background">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center space-y-6">
+            {/* Debug/Admin Actions - Temporary */}
+            <div className="mb-8 p-4 bg-muted/50 rounded-lg border">
+              <p className="text-sm text-muted-foreground mb-2">🔧 Acciones de desarrollo (temporal)</p>
+              <div className="flex gap-2 justify-center">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={async () => {
+                    const { error } = await supabase.auth.signOut();
+                    if (!error) {
+                      window.location.reload();
+                    }
+                  }}
+                >
+                  Cerrar Sesión
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => navigate('/auth')}
+                >
+                  Ir a Login
+                </Button>
+              </div>
+            </div>
+
             <div className="flex justify-center mb-6">
               <div className="h-16 w-16 bg-primary rounded-2xl flex items-center justify-center">
                 <Sparkles className="h-8 w-8 text-primary-foreground" />
