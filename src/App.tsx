@@ -38,7 +38,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
-      <BrowserRouter>
+      <BrowserRouter basename="/">
         <AuthProvider>
           <Routes>
             {/* Public Routes */}
