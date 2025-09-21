@@ -71,6 +71,36 @@ export type Database = {
           },
         ]
       }
+      activity_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          id: number
+          ip_address: unknown | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          id?: number
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: number
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       availability_exceptions: {
         Row: {
           calendar_id: number
@@ -504,7 +534,7 @@ export type Database = {
           marketing_emails: boolean
           phone: string | null
           push_notifications: boolean
-          role: string
+          role: Database["public"]["Enums"]["user_role_enum"]
           status: string
           timezone: string
           updated_at: string
@@ -521,7 +551,7 @@ export type Database = {
           marketing_emails?: boolean
           phone?: string | null
           push_notifications?: boolean
-          role?: string
+          role?: Database["public"]["Enums"]["user_role_enum"]
           status?: string
           timezone?: string
           updated_at?: string
@@ -538,7 +568,7 @@ export type Database = {
           marketing_emails?: boolean
           phone?: string | null
           push_notifications?: boolean
-          role?: string
+          role?: Database["public"]["Enums"]["user_role_enum"]
           status?: string
           timezone?: string
           updated_at?: string
@@ -923,6 +953,7 @@ export type Database = {
       session_status_enum: "scheduled" | "completed" | "cancelled" | "no_show"
       session_type_enum: "S1" | "S2" | "S3"
       Status: "Not started" | "Started" | "Completed"
+      user_role_enum: "client" | "coach" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1079,6 +1110,7 @@ export const Constants = {
       session_status_enum: ["scheduled", "completed", "cancelled", "no_show"],
       session_type_enum: ["S1", "S2", "S3"],
       Status: ["Not started", "Started", "Completed"],
+      user_role_enum: ["client", "coach", "admin"],
     },
   },
 } as const
