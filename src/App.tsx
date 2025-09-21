@@ -28,6 +28,25 @@ import { LoginPage } from './pages/auth/LoginPage';
 
 // Coach Pages
 import { AnalyticsDashboard } from '@/pages/coach/AnalyticsDashboard';
+import ClientsPage from '@/pages/coach/ClientsPage';
+import NewClientPage from '@/pages/coach/NewClientPage';
+import SessionsPage from '@/pages/coach/SessionsPage';
+import ProgramsPage from '@/pages/coach/ProgramsPage';
+import MessagesPage from '@/pages/coach/MessagesPage';
+import ProfilePage from '@/pages/coach/ProfilePage';
+import {
+  ClientDetailPage,
+  NewSessionPage,
+  SessionDetailPage,
+  NewProgramPage,
+  ProgramDetailPage,
+  AnalyticsPage,
+  ResourcesPage,
+  BillingPage,
+  SettingsPage,
+  SecurityPage,
+  HelpPage
+} from '@/pages/coach/PlaceholderPages';
 import CoachWaveDebugDashboard from '@/components/CoachWaveDebugDashboard';
 
 // Error Pages
@@ -73,36 +92,39 @@ const App = () => (
             >
               <Route index element={<Navigate to="/coach/dashboard" replace />} />
               <Route path="dashboard" element={<AnalyticsDashboard />} />
-              <Route path="calendar" element={
-                <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Calendario</h1>
-                  <p className="text-muted-foreground">Página en construcción</p>
-                </div>
-              } />
-              <Route path="clients" element={
-                <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Mis Clientes</h1>
-                  <p className="text-muted-foreground">Página en construcción</p>
-                </div>
-              } />
-              <Route path="finances" element={
-                <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Finanzas</h1>
-                  <p className="text-muted-foreground">Página en construcción</p>
-                </div>
-              } />
-              <Route path="profile" element={
-                <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Mi Perfil</h1>
-                  <p className="text-muted-foreground">Página en construcción</p>
-                </div>
-              } />
-              <Route path="settings" element={
-                <div className="p-6">
-                  <h1 className="text-2xl font-bold mb-4">Configuración</h1>
-                  <p className="text-muted-foreground">Página en construcción</p>
-                </div>
-              } />
+              
+              {/* Gestión de clientes */}
+              <Route path="clients" element={<ClientsPage />} />
+              <Route path="clients/new" element={<NewClientPage />} />
+              <Route path="clients/:id" element={<ClientDetailPage />} />
+              
+              {/* Gestión de sesiones */}
+              <Route path="sessions" element={<SessionsPage />} />
+              <Route path="sessions/new" element={<NewSessionPage />} />
+              <Route path="sessions/:id" element={<SessionDetailPage />} />
+              
+              {/* Programas de entrenamiento */}
+              <Route path="programs" element={<ProgramsPage />} />
+              <Route path="programs/new" element={<NewProgramPage />} />
+              <Route path="programs/:id" element={<ProgramDetailPage />} />
+              
+              {/* Analytics */}
+              <Route path="analytics" element={<AnalyticsPage />} />
+              
+              {/* Mensajes */}
+              <Route path="messages" element={<MessagesPage />} />
+              
+              {/* Recursos */}
+              <Route path="resources" element={<ResourcesPage />} />
+              
+              {/* Facturación */}
+              <Route path="billing" element={<BillingPage />} />
+              
+              {/* Configuración del perfil */}
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="settings" element={<SettingsPage />} />
+              <Route path="security" element={<SecurityPage />} />
+              <Route path="help" element={<HelpPage />} />
             </Route>
 
             {/* Legacy coach pages (outside main layout for full-screen experience) */}
