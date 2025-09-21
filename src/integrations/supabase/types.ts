@@ -874,6 +874,18 @@ export type Database = {
       }
     }
     Views: {
+      platform_stats: {
+        Row: {
+          active_coaches: number | null
+          completed_sessions: number | null
+          total_clients: number | null
+          total_coaches: number | null
+          total_revenue: number | null
+          total_sessions: number | null
+          total_users: number | null
+        }
+        Relationships: []
+      }
       view_calendar_week: {
         Row: {
           calendar_id: number | null
@@ -924,7 +936,10 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       activity_type_enum:
