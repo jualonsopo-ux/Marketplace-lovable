@@ -21,10 +21,15 @@ const AuthPage = () => {
     console.log('AuthPage: user state changed', { user: user?.email, loading, profile: profile?.role });
   }, [user, loading, profile]);
 
-  // Redirect if already authenticated  
-  if (user && !loading) {
-    console.log('Redirecting user:', user.email, 'confirmed:', user.email_confirmed_at);
+  // Don't show auth page if user is authenticated - let role routing handle redirect
+  if (user && profile && !loading) {
+    console.log('User authenticated, role routing will handle redirect:', profile.role);
     return <Navigate to="/" replace />;
+  }
+  
+  // If user exists but no profile, stay on auth page for debugging
+  if (user && !profile && !loading) {
+    console.log('User exists but no profile found:', user.email);
   }
 
   // Show loading while checking auth state

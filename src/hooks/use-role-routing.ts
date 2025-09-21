@@ -44,10 +44,12 @@ export function useRoleRouting(options: RoleRoutingOptions = {}) {
           break;
           
         case 'coach':
+        case 'psychologist':
           navigate('/coach/dashboard');
           break;
           
         case 'staff':
+        case 'client':
           navigate('/client/dashboard');
           break;
           

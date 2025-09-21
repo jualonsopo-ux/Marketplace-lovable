@@ -80,9 +80,11 @@ export function HomePage() {
       console.log('Redirecting authenticated user with role:', profile.role);
       switch (profile.role) {
         case 'coach':
+        case 'psychologist':
           navigate('/coach/dashboard');
           break;
         case 'staff':
+        case 'client':
           navigate('/client/dashboard');
           break;
         case 'admin':
