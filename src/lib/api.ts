@@ -1,281 +1,293 @@
-/**
- * API service layer - currently using mock data but structured for real API calls
- * When Supabase is connected, these functions will be replaced with actual API calls
- */
-
-import { createMockApiResponse, createMockErrorResponse } from '@/lib/mock-data';
-import { validateData, transformLegacyCoachData } from '@/lib/validation';
+import { Coach, Session, Review, User, QueryParams } from '@/schemas';
+import { CoachSchema, SessionSchema, ReviewSchema, UserSchema } from '@/schemas';
 import { 
-  UserSchema, 
-  CoachProfileSchema, 
-  SessionSchema, 
-  ReviewSchema, 
-  SessionCreateFormSchema,
-  ReviewCreateFormSchema,
-  type User, 
-  type CoachProfile, 
-  type Session, 
-  type Review, 
-  type SessionCreateForm,
-  type ReviewCreateForm,
-  type CoachWithUser
-} from '@/schemas';
-import { coaches, getCoachById, searchCoaches as searchCoachesData } from '@/data/coaches';
+  mockCoaches, 
+  mockSessions, 
+  mockReviews, 
+  mockUsers,
+  generateUUID, 
+  generateDate 
+} from '@/lib/mock-data';
 
-// Mock current user
-const CURRENT_USER_ID = 'user-maria-lopez';
+// ============================================================================
+// TYPES
+// ============================================================================
+
+interface ApiResponse<T> {
+  data: T;
+  error?: string;
+  metadata?: {
+    page?: number;
+    limit?: number;
+    total?: number;
+    totalPages?: number;
+  };
+}
+
+// ============================================================================
+// UTILITIES
+// ============================================================================
+
+const CURRENT_USER_ID = 'current-user-123';
+
+function createMockApiResponse<T>(data: T, metadata?: ApiResponse<T>['metadata']): T {
+  // In a real app, this would return { data, metadata }
+  // For simplicity, we're just returning the data
+  return data;
+}
+
+function validateData<T>(schema: any, data: any): T {
+  try {
+    return schema.parse(data);
+  } catch (error) {
+    console.error('Validation error:', error);
+    throw new Error('Invalid data format');
+  }
+}
+
+function applyFilters<T extends Record<string, any>>(
+  items: T[], 
+  filters: Record<string, any>
+): T[] {
+  return items.filter(item => {
+    return Object.entries(filters).every(([key, value]) => {
+      if (value === undefined || value === null || value === '') return true;
+      
+      const itemValue = item[key];
+      
+      // Array contains filter
+      if (Array.isArray(itemValue)) {
+        return itemValue.includes(value);
+      }
+      
+      // String contains filter (case insensitive)
+      if (typeof itemValue === 'string' && typeof value === 'string') {
+        return itemValue.toLowerCase().includes(value.toLowerCase());
+      }
+      
+      // Exact match for other types
+      return itemValue === value;
+    });
+  });
+}
+
+function applyPagination<T>(
+  items: T[], 
+  page: number = 1, 
+  limit: number = 10
+): { data: T[]; metadata: ApiResponse<T[]>['metadata'] } {
+  const offset = (page - 1) * limit;
+  const total = items.length;
+  const totalPages = Math.ceil(total / limit);
+  const paginatedItems = items.slice(offset, offset + limit);
+  
+  return {
+    data: paginatedItems,
+    metadata: {
+      page,
+      limit,
+      total,
+      totalPages
+    }
+  };
+}
 
 // ============================================================================
 // COACHES API
 // ============================================================================
 
-export interface CoachFilters {
-  category?: string;
-  minRating?: number;
-  maxPrice?: number;
-  languages?: string[];
-  specializations?: string[];
-  isActive?: boolean;
-  verificationStatus?: string;
-  is_featured?: boolean;
-  search?: string;
-}
-
-export async function fetchCoaches(filters?: CoachFilters): Promise<CoachWithUser[]> {
+export async function fetchCoaches(params?: QueryParams): Promise<Coach[]> {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 800));
   
-  // Use existing search function but transform to new schema
-  const searchResults = filters 
-    ? searchCoachesData('', filters)
-    : coaches;
-    
-  const transformedCoaches = searchResults.map(coach => {
-    const transformed = transformLegacyCoachData(coach);
-    return {
-      ...transformed.coach,
-      coaching_methods: [...transformed.coach.coaching_methods], // Make mutable
-      user: transformed.user,
-    };
-  });
+  let filteredCoaches = [...mockCoaches];
   
-  return createMockApiResponse(transformedCoaches);
+  // Apply filters
+  if (params?.filters) {
+    filteredCoaches = applyFilters(filteredCoaches, params.filters);
+  }
+  
+  // Apply search
+  if (params?.search) {
+    const searchLower = params.search.toLowerCase();
+    filteredCoaches = filteredCoaches.filter(coach => 
+      coach.name.toLowerCase().includes(searchLower) ||
+      coach.specialties.some(s => s.toLowerCase().includes(searchLower)) ||
+      coach.bio.toLowerCase().includes(searchLower)
+    );
+  }
+  
+  // Apply sorting
+  if (params?.sortBy) {
+    const { field, order = 'asc' } = params.sortBy;
+    filteredCoaches.sort((a, b) => {
+      const aValue = a[field as keyof Coach];
+      const bValue = b[field as keyof Coach];
+      
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return order === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+      
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return order === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+      
+      return 0;
+    });
+  }
+  
+  // Apply pagination
+  const result = applyPagination(
+    filteredCoaches, 
+    params?.pagination?.page, 
+    params?.pagination?.limit
+  );
+  
+  return createMockApiResponse(
+    result.data.map(coach => validateData(CoachSchema, coach)),
+    result.metadata
+  );
 }
 
-export async function fetchCoach(id: string): Promise<CoachWithUser> {
-  await new Promise(resolve => setTimeout(resolve, 500));
+export async function fetchCoach(id: string): Promise<Coach> {
+  await new Promise(resolve => setTimeout(resolve, 400));
   
-  const coach = getCoachById(id);
+  const coach = mockCoaches.find(c => c.id === id);
   if (!coach) {
     throw new Error(`Coach with id ${id} not found`);
   }
   
-  const transformed = transformLegacyCoachData(coach);
-  return createMockApiResponse({
-    ...transformed.coach,
-    coaching_methods: [...transformed.coach.coaching_methods], // Make mutable
-    user: transformed.user,
-  });
-}
-
-export async function createCoachProfile(data: Partial<CoachProfile>): Promise<CoachProfile> {
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  const newCoach: CoachProfile = {
-    id: `coach-${Date.now()}`,
-    user_id: CURRENT_USER_ID,
-    title: data.title || '',
-    bio: data.bio || '',
-    years_experience: data.years_experience || 0,
-    specializations: data.specializations || [],
-    hourly_rate: data.hourly_rate || 50,
-    currency: data.currency || 'EUR',
-    timezone: data.timezone || 'Europe/Madrid',
-    total_sessions: 0,
-    average_rating: 0,
-    total_reviews: 0,
-    response_time_hours: 24,
-    instant_booking: data.instant_booking || false,
-    languages: data.languages || ['es'],
-    coaching_methods: data.coaching_methods || ['video'],
-    verification_status: 'pending',
-    is_featured: false,
-    is_active: true,
-    created_at: new Date(),
-    updated_at: new Date(),
-  };
-  
-  return createMockApiResponse(validateData(CoachProfileSchema, newCoach));
-}
-
-export async function updateCoachProfile(id: string, data: Partial<CoachProfile>): Promise<CoachProfile> {
-  await new Promise(resolve => setTimeout(resolve, 800));
-  
-  const coach = await fetchCoach(id);
-  const updatedCoach = {
-    ...coach,
-    ...data,
-    updated_at: new Date(),
-  };
-  
-  return createMockApiResponse(validateData(CoachProfileSchema, updatedCoach));
+  return createMockApiResponse(validateData(CoachSchema, coach));
 }
 
 // ============================================================================
 // SESSIONS API
 // ============================================================================
 
-export async function fetchSessions(userId: string, role: 'client' | 'coach' = 'client'): Promise<Session[]> {
+export async function fetchSessions(params?: QueryParams): Promise<Session[]> {
   await new Promise(resolve => setTimeout(resolve, 600));
   
-  // Mock sessions data
-  const mockSessions: Session[] = [
-    {
-      id: 'session-1',
-      coach_id: 'ana-garcia',
-      client_id: CURRENT_USER_ID,
-      title: 'Sesión de coaching personal',
-      description: 'Revisar objetivos profesionales del trimestre',
-      scheduled_start: new Date('2024-09-22T10:00:00'),
-      scheduled_end: new Date('2024-09-22T11:00:00'),
-      session_type: 'video',
-      meeting_link: 'https://meet.google.com/abc-def-ghi',
-      status: 'scheduled',
-      payment_status: 'paid',
-      amount: 50,
-      currency: 'EUR',
-      created_at: new Date('2024-09-20T08:00:00'),
-      updated_at: new Date('2024-09-20T08:00:00'),
-    },
-    {
-      id: 'session-2',
-      coach_id: 'laura-sanchez',
-      client_id: CURRENT_USER_ID,
-      title: 'Sesión de hábitos matutinos',
-      description: 'Establecer rutina productiva',
-      scheduled_start: new Date('2024-09-18T09:00:00'),
-      scheduled_end: new Date('2024-09-18T09:30:00'),
-      actual_start: new Date('2024-09-18T09:00:00'),
-      actual_end: new Date('2024-09-18T09:32:00'),
-      session_type: 'video',
-      status: 'completed',
-      payment_status: 'paid',
-      amount: 45,
-      currency: 'EUR',
-      created_at: new Date('2024-09-15T14:00:00'),
-      updated_at: new Date('2024-09-18T09:35:00'),
-    }
-  ];
+  let filteredSessions = [...mockSessions];
   
-  // Filter by role
-  const filteredSessions = mockSessions.filter(session => 
-    role === 'client' ? session.client_id === userId : session.coach_id === userId
+  // Apply filters
+  if (params?.filters) {
+    filteredSessions = applyFilters(filteredSessions, params.filters);
+  }
+  
+  // Apply pagination
+  const result = applyPagination(
+    filteredSessions,
+    params?.pagination?.page,
+    params?.pagination?.limit
   );
   
-  return createMockApiResponse(filteredSessions);
+  return createMockApiResponse(
+    result.data.map(session => validateData(SessionSchema, session)),
+    result.metadata
+  );
 }
 
 export async function fetchSession(id: string): Promise<Session> {
-  await new Promise(resolve => setTimeout(resolve, 400));
+  await new Promise(resolve => setTimeout(resolve, 300));
   
-  const sessions = await fetchSessions(CURRENT_USER_ID);
-  const session = sessions.find(s => s.id === id);
-  
+  const session = mockSessions.find(s => s.id === id);
   if (!session) {
     throw new Error(`Session with id ${id} not found`);
   }
   
-  return createMockApiResponse(session);
+  return createMockApiResponse(validateData(SessionSchema, session));
 }
 
-export async function createSession(data: SessionCreateForm & { coach_id: string }): Promise<Session> {
-  await new Promise(resolve => setTimeout(resolve, 1200));
+export async function bookSession(data: Omit<Session, 'id' | 'createdAt' | 'updatedAt'>): Promise<Session> {
+  await new Promise(resolve => setTimeout(resolve, 1000));
   
   const newSession: Session = {
-    id: `session-${Date.now()}`,
-    coach_id: data.coach_id,
-    client_id: CURRENT_USER_ID,
-    title: data.title,
-    description: data.description,
-    scheduled_start: data.scheduled_start,
-    scheduled_end: data.scheduled_end,
-    session_type: data.session_type,
-    location: data.location,
-    status: 'scheduled',
-    payment_status: 'pending',
-    amount: 50, // Would be calculated based on coach rate
-    currency: 'EUR',
-    created_at: new Date(),
-    updated_at: new Date(),
+    ...data,
+    id: generateUUID(),
+    createdAt: generateDate(),
+    updatedAt: generateDate(),
   };
+  
+  // In a real app, this would persist to a database
+  mockSessions.push(newSession);
   
   return createMockApiResponse(validateData(SessionSchema, newSession));
 }
 
 export async function updateSession(id: string, data: Partial<Session>): Promise<Session> {
-  await new Promise(resolve => setTimeout(resolve, 800));
+  await new Promise(resolve => setTimeout(resolve, 500));
   
-  const session = await fetchSession(id);
+  const sessionIndex = mockSessions.findIndex(s => s.id === id);
+  if (sessionIndex === -1) {
+    throw new Error(`Session with id ${id} not found`);
+  }
+  
   const updatedSession = {
-    ...session,
+    ...mockSessions[sessionIndex],
     ...data,
-    updated_at: new Date(),
+    updatedAt: generateDate(),
   };
+  
+  mockSessions[sessionIndex] = updatedSession;
   
   return createMockApiResponse(validateData(SessionSchema, updatedSession));
 }
 
-export async function cancelSession(id: string, reason?: string): Promise<Session> {
-  return updateSession(id, {
+export async function cancelSession(id: string): Promise<void> {
+  await new Promise(resolve => setTimeout(resolve, 400));
+  
+  const sessionIndex = mockSessions.findIndex(s => s.id === id);
+  if (sessionIndex === -1) {
+    throw new Error(`Session with id ${id} not found`);
+  }
+  
+  mockSessions[sessionIndex] = {
+    ...mockSessions[sessionIndex],
     status: 'cancelled',
-    cancelled_at: new Date(),
-    cancellation_reason: reason,
-  });
+    updatedAt: generateDate(),
+  };
 }
 
 // ============================================================================
 // REVIEWS API
 // ============================================================================
 
-export async function fetchReviews(coachId: string): Promise<Review[]> {
+export async function fetchReviews(params?: QueryParams): Promise<Review[]> {
   await new Promise(resolve => setTimeout(resolve, 500));
   
-  // Mock reviews data
-  const mockReviews: Review[] = [
-    {
-      id: 'review-1',
-      session_id: 'session-2',
-      client_id: CURRENT_USER_ID,
-      coach_id: coachId,
-      rating: 5,
-      comment: 'Excelente coach, me ayudó muchísimo con mis objetivos.',
-      tags: ['professional', 'helpful', 'knowledgeable'],
-      is_public: true,
-      is_verified: true,
-      created_at: new Date('2024-09-18T10:00:00'),
-      updated_at: new Date('2024-09-18T10:00:00'),
-    }
-  ];
+  let filteredReviews = [...mockReviews];
   
-  return createMockApiResponse(mockReviews.filter(r => r.coach_id === coachId));
+  // Apply filters (e.g., by coach ID)
+  if (params?.filters) {
+    filteredReviews = applyFilters(filteredReviews, params.filters);
+  }
+  
+  // Apply pagination
+  const result = applyPagination(
+    filteredReviews,
+    params?.pagination?.page,
+    params?.pagination?.limit
+  );
+  
+  return createMockApiResponse(
+    result.data.map(review => validateData(ReviewSchema, review)),
+    result.metadata
+  );
 }
 
-export async function createReview(data: ReviewCreateForm & { session_id: string; coach_id: string }): Promise<Review> {
-  await new Promise(resolve => setTimeout(resolve, 900));
+export async function createReview(data: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
+  await new Promise(resolve => setTimeout(resolve, 800));
   
   const newReview: Review = {
-    id: `review-${Date.now()}`,
-    session_id: data.session_id,
-    client_id: CURRENT_USER_ID,
-    coach_id: data.coach_id,
-    rating: data.rating,
-    comment: data.comment,
-    tags: data.tags || [],
-    is_public: data.is_public,
-    is_verified: false,
-    created_at: new Date(),
-    updated_at: new Date(),
+    ...data,
+    id: generateUUID(),
+    createdAt: generateDate(),
   };
+  
+  // In a real app, this would persist to a database
+  mockReviews.push(newReview);
   
   return createMockApiResponse(validateData(ReviewSchema, newReview));
 }
@@ -289,21 +301,17 @@ export async function fetchCurrentUser(): Promise<User> {
   
   const mockUser: User = {
     id: CURRENT_USER_ID,
-    email: 'maria.lopez@example.com',
+    user_id: CURRENT_USER_ID,
+    display_name: 'María López',
     role: 'client',
     status: 'active',
-    first_name: 'María',
-    last_name: 'López',
-    profile_image: 'https://images.unsplash.com/photo-1494790108755-2616b612b372?w=400',
-    phone: '+34 612 345 678',
     timezone: 'Europe/Madrid',
     language: 'es',
     email_notifications: true,
     push_notifications: true,
     marketing_emails: false,
-    created_at: new Date('2024-08-01'),
-    updated_at: new Date('2024-09-20'),
-    last_login: new Date('2024-09-20'),
+    created_at: '2024-08-01T00:00:00Z',
+    updated_at: '2024-09-20T00:00:00Z',
   };
   
   return createMockApiResponse(validateData(UserSchema, mockUser));
@@ -316,7 +324,7 @@ export async function updateUser(id: string, data: Partial<User>): Promise<User>
   const updatedUser = {
     ...user,
     ...data,
-    updated_at: new Date(),
+    updated_at: new Date().toISOString(),
   };
   
   return createMockApiResponse(validateData(UserSchema, updatedUser));

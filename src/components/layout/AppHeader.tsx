@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +19,7 @@ import { Bell, Search, Plus, User, Settings, LogOut, Calendar } from 'lucide-rea
 export function AppHeader() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,14 +28,10 @@ export function AppHeader() {
     }
   };
 
-  // Mock user data - this would come from authentication context
-  const user = {
-    name: 'María López',
-    email: 'maria@example.com',
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b372?w=100',
-    role: 'client' as const,
-    unreadNotifications: 3,
-  };
+  // User data from authentication context
+  const displayName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || 'Usuario';
+  const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
+  const unreadNotifications = 3; // This would come from notifications API
 
   return (
     <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -78,12 +76,12 @@ export function AppHeader() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="relative">
                 <Bell className="h-4 w-4" />
-                {user.unreadNotifications > 0 && (
+                {unreadNotifications > 0 && (
                   <Badge 
                     variant="destructive" 
                     className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
                   >
-                    {user.unreadNotifications}
+                    {unreadNotifications}
                   </Badge>
                 )}
               </Button>
@@ -128,18 +126,18 @@ export function AppHeader() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                 <Avatar className="h-9 w-9">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                  <AvatarImage src="/placeholder.svg?height=36&width=36" alt={displayName} />
+                  <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{user.name}</p>
-                  <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                  <p className="text-sm font-medium leading-none">{displayName}</p>
+                  <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
                   <Badge variant="secondary" className="w-fit text-xs mt-1">
-                    {user.role === 'client' ? 'Cliente' : 'Coach'}
+                    Cliente
                   </Badge>
                 </div>
               </DropdownMenuLabel>
@@ -157,7 +155,7 @@ export function AppHeader() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
+              <DropdownMenuItem onClick={() => signOut()} className="text-destructive">
                 <LogOut className="mr-2 h-4 w-4" />
                 Cerrar sesión
               </DropdownMenuItem>

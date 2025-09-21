@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from '@/contexts/AuthContext';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { HomePage } from '@/pages/HomePage';
 import { DiscoverPage } from '@/pages/DiscoverPage';
@@ -10,13 +11,19 @@ import BookingFlow from '@/components/BookingFlow';
 import { getCoachById } from '@/data/coaches';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import AuthPage from './pages/AuthPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => (
   <TooltipProvider>
     <Toaster />
     <Sonner />
     <BrowserRouter>
-      <Routes>
+      <AuthProvider>
+        <Routes>
+        {/* Authentication route */}
+        <Route path="/auth" element={<AuthPage />} />
+        
         {/* Legacy route - keeping for now */}
         <Route path="/legacy" element={<Index />} />
         
@@ -26,8 +33,9 @@ const App = () => (
         
         {/* Main Application Routes */}
         <Route path="/*" element={
-          <AppLayout>
-            <Routes>
+          <ProtectedRoute>
+            <AppLayout>
+              <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/discover" element={<DiscoverPage />} />
               <Route path="/sessions" element={
@@ -89,10 +97,12 @@ const App = () => (
               
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AppLayout>
+              </Routes>
+            </AppLayout>
+          </ProtectedRoute>
         } />
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   </TooltipProvider>
 );
