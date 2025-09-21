@@ -132,7 +132,11 @@ export function LoginPage() {
             redirectPath = '/coach/dashboard'
             break
           case 'staff':
+          case 'client':
             redirectPath = '/client/dashboard'
+            break
+          case 'psychologist':
+            redirectPath = '/coach/dashboard' // Psychologists use coach dashboard
             break
           case 'admin':
             redirectPath = '/admin/dashboard'

@@ -48,7 +48,7 @@ export function useUpdateUserProfile() {
       
       const { data: updatedProfile, error } = await supabase
         .from('profiles')
-        .update(data)
+        .update(data as any) // Type assertion for now until Supabase types update
         .eq('user_id', authUser.id)
         .select()
         .single();
