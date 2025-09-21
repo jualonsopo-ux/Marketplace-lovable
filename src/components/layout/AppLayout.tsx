@@ -3,7 +3,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from './AppSidebar';
 import { AppHeader } from './AppHeader';
 
-export function AppLayout() {
+export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
@@ -11,7 +11,7 @@ export function AppLayout() {
         <div className="flex-1 flex flex-col">
           <AppHeader />
           <main className="flex-1 overflow-auto">
-            <Outlet />
+            {children}
           </main>
         </div>
       </div>
