@@ -62,9 +62,9 @@ export function CoachList({
   const hasActiveFilters = activeFiltersCount > 0 || searchQuery.length > 0;
 
   // Get unique values for filter options
-  const categories = [...new Set(baseCoaches.map(c => c.category))];
-  const allLanguages = [...new Set(baseCoaches.flatMap(c => c.languages))];
-  const allSpecialties = [...new Set(baseCoaches.flatMap(c => c.specialties))];
+  const categories = [...new Set(baseCoaches.map(c => c.category))].filter(Boolean);
+  const allLanguages = [...new Set(baseCoaches.flatMap(c => c.languages))].filter(Boolean);
+  const allSpecialties = [...new Set(baseCoaches.flatMap(c => c.specialties))].filter(Boolean);
 
   const getGridClassName = () => {
     switch (variant) {
@@ -99,24 +99,24 @@ export function CoachList({
             {/* Quick filters */}
             {showFilters && (
               <div className="flex flex-wrap items-center gap-3">
-                <Select value={filters.category || ''} onValueChange={(value) => handleFilterChange('category', value || undefined)}>
+                <Select value={filters.category || 'all'} onValueChange={(value) => handleFilterChange('category', value === 'all' ? undefined : value)}>
                   <SelectTrigger className="w-48">
                     <SelectValue placeholder="Todas las categorías" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Todas las categorías</SelectItem>
+                    <SelectItem value="all">Todas las categorías</SelectItem>
                     {categories.map(category => (
                       <SelectItem key={category} value={category}>{category}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
 
-                <Select value={filters.minRating?.toString() || ''} onValueChange={(value) => handleFilterChange('minRating', value ? parseFloat(value) : undefined)}>
+                <Select value={filters.minRating?.toString() || 'all'} onValueChange={(value) => handleFilterChange('minRating', value === 'all' ? undefined : parseFloat(value))}>
                   <SelectTrigger className="w-40">
                     <SelectValue placeholder="Cualquier rating" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Cualquier rating</SelectItem>
+                    <SelectItem value="all">Cualquier rating</SelectItem>
                     <SelectItem value="4.5">4.5+ ⭐</SelectItem>
                     <SelectItem value="4.0">4.0+ ⭐</SelectItem>
                     <SelectItem value="3.5">3.5+ ⭐</SelectItem>
