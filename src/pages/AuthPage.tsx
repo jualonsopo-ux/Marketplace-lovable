@@ -10,12 +10,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2 } from 'lucide-react';
 
 const AuthPage = () => {
-  const { user, loading, signIn, signUp } = useAuth();
+  const { user, loading, signIn, signUp, profile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   
   // Form states
   const [signInData, setSignInData] = useState({ email: '', password: '' });
   const [signUpData, setSignUpData] = useState({ email: '', password: '', displayName: '', confirmPassword: '', role: 'client' });
+
+  useEffect(() => {
+    console.log('AuthPage: user state changed', { user: user?.email, loading, profile: profile?.role });
+  }, [user, loading, profile]);
 
   // Redirect if already authenticated  
   if (user && !loading) {

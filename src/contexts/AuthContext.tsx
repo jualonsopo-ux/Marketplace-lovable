@@ -120,6 +120,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           description: error.message,
           variant: "destructive",
         });
+      } else {
+        console.log('Login successful, waiting for auth state change...');
+        toast({
+          title: "Inicio de sesión exitoso",
+          description: "Bienvenido de vuelta.",
+        });
       }
 
       return { error };
