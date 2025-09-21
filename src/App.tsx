@@ -15,7 +15,9 @@ if (import.meta.env.DEV) {
 
 // Layouts
 import { PublicLayout } from '@/components/layouts/PublicLayout';
-import { DashboardLayout } from '@/components/layouts/DashboardLayout';
+import { CoachDashboardLayout } from '@/components/layouts/CoachDashboardLayout';
+import { ClientDashboardLayout } from '@/components/layouts/ClientDashboardLayout';
+import { AdminDashboardLayout } from '@/components/layouts/AdminDashboardLayout';
 
 // Public Pages
 import { HomePage } from '@/pages/HomePage';
@@ -34,6 +36,12 @@ import SessionsPage from '@/pages/coach/SessionsPage';
 import ProgramsPage from '@/pages/coach/ProgramsPage';
 import MessagesPage from '@/pages/coach/MessagesPage';
 import ProfilePage from '@/pages/coach/ProfilePage';
+
+// Client Pages
+import { ClientDashboard } from '@/pages/client/ClientDashboard';
+
+// Admin Pages
+import { AdminDashboard } from '@/pages/admin/AdminDashboard';
 import {
   ClientDetailPage,
   NewSessionPage,
@@ -85,8 +93,8 @@ const App = () => (
             <Route 
               path="/coach" 
               element={
-                <ProtectedRoute allowedRoles={['coach']}>
-                  <DashboardLayout />
+                <ProtectedRoute allowedRoles={['coach', 'admin']}>
+                  <CoachDashboardLayout />
                 </ProtectedRoute>
               }
             >
@@ -125,6 +133,49 @@ const App = () => (
               <Route path="settings" element={<SettingsPage />} />
               <Route path="security" element={<SecurityPage />} />
               <Route path="help" element={<HelpPage />} />
+            </Route>
+
+            {/* Client Dashboard Routes */}
+            <Route 
+              path="/client" 
+              element={
+                <ProtectedRoute allowedRoles={['client', 'admin']}>
+                  <ClientDashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate to="/client/dashboard" replace />} />
+              <Route path="dashboard" element={<ClientDashboard />} />
+              <Route path="discover" element={<DiscoverPage />} />
+              <Route path="sessions" element={<div className="p-6"><h1 className="text-2xl font-bold">Mis Sesiones</h1></div>} />
+              <Route path="coaches" element={<div className="p-6"><h1 className="text-2xl font-bold">Mis Coaches</h1></div>} />
+              <Route path="programs" element={<div className="p-6"><h1 className="text-2xl font-bold">Mis Programas</h1></div>} />
+              <Route path="messages" element={<div className="p-6"><h1 className="text-2xl font-bold">Mensajes</h1></div>} />
+              <Route path="payments" element={<div className="p-6"><h1 className="text-2xl font-bold">Mis Pagos</h1></div>} />
+              <Route path="profile" element={<div className="p-6"><h1 className="text-2xl font-bold">Mi Perfil</h1></div>} />
+              <Route path="settings" element={<div className="p-6"><h1 className="text-2xl font-bold">Configuración</h1></div>} />
+              <Route path="help" element={<div className="p-6"><h1 className="text-2xl font-bold">Ayuda</h1></div>} />
+            </Route>
+
+            {/* Admin Dashboard Routes */}
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminDashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="coaches" element={<div className="p-6"><h1 className="text-2xl font-bold">Gestión de Coaches</h1></div>} />
+              <Route path="clients" element={<div className="p-6"><h1 className="text-2xl font-bold">Gestión de Clientes</h1></div>} />
+              <Route path="analytics" element={<div className="p-6"><h1 className="text-2xl font-bold">Analytics Globales</h1></div>} />
+              <Route path="reports" element={<div className="p-6"><h1 className="text-2xl font-bold">Reportes</h1></div>} />
+              <Route path="activity" element={<div className="p-6"><h1 className="text-2xl font-bold">Actividad del Sistema</h1></div>} />
+              <Route path="database" element={<div className="p-6"><h1 className="text-2xl font-bold">Base de Datos</h1></div>} />
+              <Route path="settings" element={<div className="p-6"><h1 className="text-2xl font-bold">Configuración Global</h1></div>} />
+              <Route path="alerts" element={<div className="p-6"><h1 className="text-2xl font-bold">Alertas del Sistema</h1></div>} />
             </Route>
 
             {/* Legacy coach pages (outside main layout for full-screen experience) */}

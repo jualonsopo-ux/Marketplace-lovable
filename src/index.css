@@ -49,6 +49,11 @@
     /* Notion-style radius */
     --radius: 0.5rem;
 
+    /* Enhanced gradients for role-based branding */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
+    --gradient-success: linear-gradient(135deg, hsl(var(--success)) 0%, hsl(142 71% 60%) 100%);
+    --gradient-warning: linear-gradient(135deg, hsl(var(--warning)) 0%, hsl(38 92% 65%) 100%);
+
     /* Clean gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-hero: linear-gradient(135deg, hsl(249 80% 64%), hsl(252 84% 75%));
