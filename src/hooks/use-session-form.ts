@@ -1,10 +1,8 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useEnhancedForm } from '@/hooks/use-enhanced-forms';
 import { SessionCreateFormSchema, type SessionCreateForm } from '@/schemas/session';
 
 export function useSessionForm(defaultValues?: Partial<SessionCreateForm>) {
-  return useForm<SessionCreateForm>({
-    resolver: zodResolver(SessionCreateFormSchema),
+  return useEnhancedForm(SessionCreateFormSchema, {
     defaultValues: {
       title: '',
       description: '',
@@ -14,6 +12,8 @@ export function useSessionForm(defaultValues?: Partial<SessionCreateForm>) {
       scheduled_end: new Date(Date.now() + 60 * 60 * 1000), // 1 hour later
       ...defaultValues,
     },
-    mode: 'onChange', // Validate on change for better UX
+    mode: 'onChange', // Enable real-time validation
+    successMessage: 'Sesión creada exitosamente',
+    errorMessage: 'Error al crear la sesión',
   });
 }

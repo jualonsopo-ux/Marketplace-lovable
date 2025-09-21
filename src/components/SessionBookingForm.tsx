@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { useSessionForm } from '@/hooks/use-session-form';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useCreateSession } from '@/hooks/use-sessions';
+import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CalendarIcon, Clock, Video, Phone, MessageSquare, MapPin } from 'lucide-react';
+import { CalendarIcon, Clock, Video, Phone, MessageSquare, MapPin, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { TextField, TextareaField, SelectField } from '@/components/forms/FormField';
 import type { SessionCreateForm } from '@/schemas/session';
 import type { Coach } from '@/types/coaching';
+import type { SubmitHandler } from 'react-hook-form';
 
 interface SessionBookingFormProps {
   coach: Coach;
@@ -39,19 +39,18 @@ const sessionTypeLabels = {
 export function SessionBookingForm({ coach, onSuccess, onCancel, isLoading = false }: SessionBookingFormProps) {
   const [step, setStep] = useState<'details' | 'datetime' | 'review'>('details');
   const form = useSessionForm();
+  const createSession = useCreateSession();
 
   const watchedValues = form.watch();
   const SessionTypeIcon = sessionTypeIcons[watchedValues.session_type] || Video;
 
-  const onSubmit = async (data: SessionCreateForm) => {
-    try {
-      // Here you would normally make an API call
-      console.log('Booking session:', data);
-      onSuccess?.(data);
-    } catch (error) {
-      console.error('Error booking session:', error);
-    }
-  };
+  const handleFormSubmit = form.submitWithHandling(async (data: SessionCreateForm) => {
+    await createSession.mutateAsync({
+      ...data,
+      coach_id: coach.id,
+    });
+    onSuccess?.(data);
+  });
 
   const handleNextStep = () => {
     if (step === 'details') {
@@ -105,7 +104,7 @@ export function SessionBookingForm({ coach, onSuccess, onCancel, isLoading = fal
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleFormSubmit} className="space-y-6">
           
           {/* Step 1: Session Details */}
           {step === 'details' && (
@@ -117,95 +116,44 @@ export function SessionBookingForm({ coach, onSuccess, onCancel, isLoading = fal
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <FormField
+                <TextField
                   control={form.control}
                   name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Título de la sesión *</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Ej: Sesión de coaching personal" 
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Dale un nombre descriptivo a tu sesión
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Título de la sesión"
+                  placeholder="Ej: Sesión de coaching personal"
+                  required
+                  description="Dale un nombre descriptivo a tu sesión"
                 />
                 
-                <FormField
+                <SelectField
                   control={form.control}
                   name="session_type"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Modalidad *</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Seleccionar modalidad" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {Object.entries(sessionTypeLabels).map(([value, label]) => {
-                            const Icon = sessionTypeIcons[value as keyof typeof sessionTypeIcons];
-                            return (
-                              <SelectItem key={value} value={value}>
-                                <div className="flex items-center gap-2">
-                                  <Icon className="h-4 w-4" />
-                                  {label}
-                                </div>
-                              </SelectItem>
-                            );
-                          })}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Modalidad"
+                  placeholder="Seleccionar modalidad"
+                  required
+                  options={Object.entries(sessionTypeLabels).map(([value, label]) => ({
+                    value,
+                    label,
+                  }))}
                 />
 
                 {watchedValues.session_type === 'in-person' && (
-                  <FormField
+                  <TextField
                     control={form.control}
                     name="location"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ubicación</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="Dirección o lugar de encuentro" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label="Ubicación"
+                    placeholder="Dirección o lugar de encuentro"
                   />
                 )}
                 
-                <FormField
+                <TextareaField
                   control={form.control}
                   name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Descripción (opcional)</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Describe qué te gustaría trabajar en esta sesión..."
-                          className="resize-none h-24"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Ayuda a tu coach a prepararse mejor para la sesión
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Descripción (opcional)"
+                  placeholder="Describe qué te gustaría trabajar en esta sesión..."
+                  rows={4}
+                  maxLength={1000}
+                  description="Ayuda a tu coach a prepararse mejor para la sesión"
                 />
               </CardContent>
             </Card>
@@ -222,84 +170,69 @@ export function SessionBookingForm({ coach, onSuccess, onCancel, isLoading = fal
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
-                    control={form.control}
-                    name="scheduled_start"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Fecha y hora de inicio *</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal justify-start",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {field.value ? (
-                                  format(field.value, "PPP 'a las' HH:mm", { locale: es })
-                                ) : (
-                                  "Seleccionar fecha y hora"
-                                )}
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={(date) => {
-                                if (date) {
-                                  // Preserve time if it exists, otherwise set to current time
-                                  const newDate = new Date(date);
-                                  if (field.value) {
-                                    newDate.setHours(field.value.getHours());
-                                    newDate.setMinutes(field.value.getMinutes());
-                                  }
-                                  field.onChange(newDate);
-                                }
-                              }}
-                              disabled={(date) => date < new Date()}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">
+                      Fecha y hora de inicio *
+                    </label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full pl-3 text-left font-normal justify-start",
+                            !watchedValues.scheduled_start && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {watchedValues.scheduled_start ? (
+                            format(watchedValues.scheduled_start, "PPP 'a las' HH:mm", { locale: es })
+                          ) : (
+                            "Seleccionar fecha y hora"
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={watchedValues.scheduled_start}
+                          onSelect={(date) => {
+                            if (date) {
+                              const newDate = new Date(date);
+                              if (watchedValues.scheduled_start) {
+                                newDate.setHours(watchedValues.scheduled_start.getHours());
+                                newDate.setMinutes(watchedValues.scheduled_start.getMinutes());
+                              }
+                              form.setValue('scheduled_start', newDate);
+                            }
+                          }}
+                          disabled={(date) => date < new Date()}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                   
-                  <FormField
-                    control={form.control}
-                    name="scheduled_end"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Hora de fin *</FormLabel>
-                        <FormControl>
-                          <div className="flex items-center space-x-2">
-                            <Clock className="h-4 w-4 text-muted-foreground" />
-                            <Input
-                              type="datetime-local"
-                              {...field}
-                              value={field.value ? format(field.value, "yyyy-MM-dd'T'HH:mm") : ''}
-                              onChange={(e) => {
-                                const date = new Date(e.target.value);
-                                field.onChange(date);
-                              }}
-                              min={watchedValues.scheduled_start ? format(watchedValues.scheduled_start, "yyyy-MM-dd'T'HH:mm") : undefined}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          La sesión durará desde el inicio hasta esta hora
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">
+                      Hora de fin *
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <input
+                        type="datetime-local"
+                        value={watchedValues.scheduled_end ? format(watchedValues.scheduled_end, "yyyy-MM-dd'T'HH:mm") : ''}
+                        onChange={(e) => {
+                          const date = new Date(e.target.value);
+                          form.setValue('scheduled_end', date);
+                        }}
+                        min={watchedValues.scheduled_start ? format(watchedValues.scheduled_start, "yyyy-MM-dd'T'HH:mm") : undefined}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      La sesión durará desde el inicio hasta esta hora
+                    </p>
+                  </div>
                 </div>
 
                 {/* Duration display */}
@@ -372,7 +305,7 @@ export function SessionBookingForm({ coach, onSuccess, onCancel, isLoading = fal
 
                 <div className="bg-primary/5 border-l-4 border-primary rounded-lg p-4">
                   <div className="flex items-start gap-3">
-                    <div className="text-primary">ℹ️</div>
+                    <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <div className="text-sm">
                       <p className="font-medium text-foreground">Antes de la sesión</p>
                       <p className="text-muted-foreground mt-1">
@@ -402,16 +335,16 @@ export function SessionBookingForm({ coach, onSuccess, onCancel, isLoading = fal
 
             <div>
               {step !== 'review' ? (
-                <Button type="button" onClick={handleNextStep}>
+                <Button type="button" onClick={handleNextStep} disabled={form.hasErrors}>
                   Siguiente
                 </Button>
               ) : (
                 <Button 
                   type="submit" 
                   className="min-w-32"
-                  disabled={isLoading}
+                  disabled={form.isSubmitting || createSession.isPending}
                 >
-                  {isLoading ? 'Reservando...' : 'Confirmar reserva'}
+                  {form.isSubmitting || createSession.isPending ? 'Reservando...' : 'Confirmar reserva'}
                 </Button>
               )}
             </div>
