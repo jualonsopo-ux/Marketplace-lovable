@@ -1076,6 +1076,15 @@ export type Database = {
       }
     }
     Functions: {
+      create_s1_booking: {
+        Args: {
+          p_coach_id: string
+          p_email: string
+          p_marketing_consent?: boolean
+          p_name: string
+        }
+        Returns: string
+      }
       current_profile_id: {
         Args: Record<PropertyKey, never>
         Returns: string
