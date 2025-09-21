@@ -14,11 +14,13 @@ interface CoachAnalyticsData {
     ends_at: string;
     price_eur: number;
     status: string;
+    title?: string;
+    session_type?: string;
   }>;
 }
 
 async function fetchCoachAnalytics(
-  coachId: string, 
+  userId: string, 
   period: 'week' | 'month' | 'year' = 'month'
 ): Promise<CoachAnalyticsData> {
   // Calculate date range based on period
@@ -37,17 +39,28 @@ async function fetchCoachAnalytics(
       break;
   }
 
-  // Fetch sessions data
+  // First get the coach profile for this user
+  const { data: coachProfile, error: profileError } = await supabase
+    .from('coach_profiles')
+    .select('id')
+    .eq('user_id', userId)
+    .single();
+
+  if (profileError || !coachProfile) {
+    throw new Error(`Failed to find coach profile: ${profileError?.message || 'No coach profile found'}`);
+  }
+
+  // Fetch sessions data using coach_profile_id
   const { data: sessions, error } = await supabase
     .from('sessions')
-    .select('id, starts_at, ends_at, price_eur, status')
-    .eq('created_by', coachId)
+    .select('id, starts_at, ends_at, price_eur, status, title, session_type')
+    .eq('coach_profile_id', coachProfile.id)
     .gte('starts_at', startDate.toISOString())
     .lte('starts_at', now.toISOString())
     .order('starts_at', { ascending: false });
 
   if (error) {
-    throw new Error(`Failed to fetch analytics: ${error.message}`);
+    throw new Error(`Failed to fetch sessions: ${error.message}`);
   }
 
   const sessionsData = sessions || [];
@@ -67,7 +80,9 @@ async function fetchCoachAnalytics(
     starts_at: session.starts_at,
     ends_at: session.ends_at,
     price_eur: Number(session.price_eur || 0),
-    status: session.status
+    status: session.status,
+    title: session.title,
+    session_type: session.session_type
   }));
 
   return {

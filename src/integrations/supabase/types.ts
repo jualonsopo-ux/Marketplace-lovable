@@ -176,6 +176,44 @@ export type Database = {
           },
         ]
       }
+      availability_schedules: {
+        Row: {
+          coach_id: number
+          created_at: string
+          day_of_week: number
+          end_time: string
+          id: number
+          is_active: boolean | null
+          start_time: string
+        }
+        Insert: {
+          coach_id: number
+          created_at?: string
+          day_of_week: number
+          end_time: string
+          id?: number
+          is_active?: boolean | null
+          start_time: string
+        }
+        Update: {
+          coach_id?: number
+          created_at?: string
+          day_of_week?: number
+          end_time?: string
+          id?: number
+          is_active?: boolean | null
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "availability_schedules_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coach_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calendars: {
         Row: {
           created_at: string
@@ -205,6 +243,125 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "workspaces"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: number
+          is_active: boolean | null
+          meta_description: string | null
+          meta_title: string | null
+          name: string
+          slug: string
+          sort_order: number | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: number
+          is_active?: boolean | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name: string
+          slug: string
+          sort_order?: number | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: number
+          is_active?: boolean | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name?: string
+          slug?: string
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
+      coach_profiles: {
+        Row: {
+          average_rating: number | null
+          bio: string
+          coaching_methods: string[] | null
+          created_at: string
+          currency: string | null
+          hourly_rate: number
+          id: number
+          instant_booking: boolean | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          languages: string[] | null
+          response_time_hours: number | null
+          specializations: string[] | null
+          title: string
+          total_reviews: number | null
+          total_sessions: number | null
+          updated_at: string
+          user_id: string
+          verification_status: string | null
+          years_experience: number | null
+        }
+        Insert: {
+          average_rating?: number | null
+          bio: string
+          coaching_methods?: string[] | null
+          created_at?: string
+          currency?: string | null
+          hourly_rate: number
+          id?: number
+          instant_booking?: boolean | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          languages?: string[] | null
+          response_time_hours?: number | null
+          specializations?: string[] | null
+          title: string
+          total_reviews?: number | null
+          total_sessions?: number | null
+          updated_at?: string
+          user_id: string
+          verification_status?: string | null
+          years_experience?: number | null
+        }
+        Update: {
+          average_rating?: number | null
+          bio?: string
+          coaching_methods?: string[] | null
+          created_at?: string
+          currency?: string | null
+          hourly_rate?: number
+          id?: number
+          instant_booking?: boolean | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          languages?: string[] | null
+          response_time_hours?: number | null
+          specializations?: string[] | null
+          title?: string
+          total_reviews?: number | null
+          total_sessions?: number | null
+          updated_at?: string
+          user_id?: string
+          verification_status?: string | null
+          years_experience?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -389,6 +546,77 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          client_id: string
+          coach_id: number
+          comment: string | null
+          created_at: string
+          id: number
+          is_public: boolean | null
+          is_verified: boolean | null
+          rating: number
+          session_id: number
+          tags: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          coach_id: number
+          comment?: string | null
+          created_at?: string
+          id?: number
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          rating: number
+          session_id: number
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          coach_id?: number
+          comment?: string | null
+          created_at?: string
+          id?: number
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          rating?: number
+          session_id?: number
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "reviews_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coach_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "view_calendar_week"
+            referencedColumns: ["session_id"]
+          },
+        ]
+      }
       session_reminders: {
         Row: {
           created_at: string
@@ -447,45 +675,84 @@ export type Database = {
       sessions: {
         Row: {
           calendar_id: number
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          client_notes: string | null
+          client_profile_id: string | null
+          coach_notes: string | null
+          coach_profile_id: number | null
           created_at: string
           created_by: string
+          description: string | null
           ends_at: string
           id: number
           lead_id: number | null
+          location: string | null
+          meeting_id: string | null
+          meeting_link: string | null
           notes: string | null
           price_eur: number | null
+          session_recording: string | null
+          session_type: string | null
           starts_at: string
           status: Database["public"]["Enums"]["session_status_enum"]
+          title: string | null
           type: Database["public"]["Enums"]["session_type_enum"]
           updated_at: string
           workspace_id: number
         }
         Insert: {
           calendar_id: number
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          client_notes?: string | null
+          client_profile_id?: string | null
+          coach_notes?: string | null
+          coach_profile_id?: number | null
           created_at?: string
           created_by: string
+          description?: string | null
           ends_at: string
           id?: number
           lead_id?: number | null
+          location?: string | null
+          meeting_id?: string | null
+          meeting_link?: string | null
           notes?: string | null
           price_eur?: number | null
+          session_recording?: string | null
+          session_type?: string | null
           starts_at: string
           status?: Database["public"]["Enums"]["session_status_enum"]
+          title?: string | null
           type: Database["public"]["Enums"]["session_type_enum"]
           updated_at?: string
           workspace_id: number
         }
         Update: {
           calendar_id?: number
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          client_notes?: string | null
+          client_profile_id?: string | null
+          coach_notes?: string | null
+          coach_profile_id?: number | null
           created_at?: string
           created_by?: string
+          description?: string | null
           ends_at?: string
           id?: number
           lead_id?: number | null
+          location?: string | null
+          meeting_id?: string | null
+          meeting_link?: string | null
           notes?: string | null
           price_eur?: number | null
+          session_recording?: string | null
+          session_type?: string | null
           starts_at?: string
           status?: Database["public"]["Enums"]["session_status_enum"]
+          title?: string | null
           type?: Database["public"]["Enums"]["session_type_enum"]
           updated_at?: string
           workspace_id?: number
@@ -496,6 +763,20 @@ export type Database = {
             columns: ["calendar_id"]
             isOneToOne: false
             referencedRelation: "calendars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_client_profile_id_fkey"
+            columns: ["client_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "sessions_coach_profile_id_fkey"
+            columns: ["coach_profile_id"]
+            isOneToOne: false
+            referencedRelation: "coach_profiles"
             referencedColumns: ["id"]
           },
           {
