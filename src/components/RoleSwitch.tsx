@@ -141,7 +141,7 @@ export function RoleSwitch() {
         <div className="text-center mt-8">
           <Badge variant="outline" className="px-4 py-2">
             <User className="w-4 h-4 mr-2" />
-            Conectado como {profile?.display_name || 'Administrador'}
+            Conectado como {profile?.full_name || 'Administrador'}
           </Badge>
         </div>
       </div>

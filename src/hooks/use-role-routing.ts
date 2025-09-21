@@ -47,7 +47,7 @@ export function useRoleRouting(options: RoleRoutingOptions = {}) {
           navigate('/coach/dashboard');
           break;
           
-        case 'client':
+        case 'staff':
           navigate('/client/dashboard');
           break;
           
@@ -66,7 +66,7 @@ export function useRoleRouting(options: RoleRoutingOptions = {}) {
     if (profile.role === 'admin' && lastUsedRole) {
       const preferredPath = 
         lastUsedRole === 'coach' ? '/coach/dashboard' :
-        lastUsedRole === 'client' ? '/client/dashboard' : 
+        lastUsedRole === 'staff' ? '/client/dashboard' : 
         '/admin/dashboard';
       
       // Only redirect if not already on a dashboard path
@@ -83,7 +83,7 @@ export function useRoleRouting(options: RoleRoutingOptions = {}) {
   }, [loading, isAuthenticated, user, profile, navigate, onboardingPath, loginPath]);
 
   // Helper function to switch roles (for admin users)
-  const switchRole = (role: 'admin' | 'coach' | 'client') => {
+  const switchRole = (role: 'admin' | 'coach' | 'staff') => {
     if (profile?.role !== 'admin') {
       console.warn('Only admin users can switch roles');
       return;

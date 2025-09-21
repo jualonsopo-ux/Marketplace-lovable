@@ -82,7 +82,7 @@ export function HomePage() {
         case 'coach':
           navigate('/coach/dashboard');
           break;
-        case 'client':
+        case 'staff':
           navigate('/client/dashboard');
           break;
         case 'admin':

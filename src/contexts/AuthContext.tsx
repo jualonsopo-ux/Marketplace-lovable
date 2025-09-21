@@ -5,18 +5,12 @@ import { toast } from '@/hooks/use-toast';
 
 type UserProfile = {
   id: string;
-  user_id: string;
-  display_name?: string;
-  avatar_url?: string;
-  bio?: string;
-  phone?: string;
-  role: 'client' | 'coach' | 'admin';
-  status: string;
-  timezone: string;
-  language: string;
-  email_notifications: boolean;
-  push_notifications: boolean;
-  marketing_emails: boolean;
+  auth_user_id: string;
+  full_name: string;
+  handle: string;
+  email: string;
+  role: 'coach' | 'psychologist' | 'admin' | 'staff';
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -56,8 +50,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('user_id', userId)
-        .maybeSingle(); // Use maybeSingle instead of single
+        .eq('auth_user_id', userId)
+        .maybeSingle();
       
       if (error) {
         console.error('Error fetching profile:', error);
@@ -149,7 +143,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         options: {
           emailRedirectTo: redirectUrl,
           data: {
-            display_name: displayName || email,
+            full_name: displayName || email,
           }
         }
       });
@@ -212,7 +206,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signOut,
     isAuthenticated: !!user,
     isCoach: profile?.role === 'coach',
-    isClient: profile?.role === 'client',
+    isClient: profile?.role === 'staff', // Using 'staff' as client equivalent
     isAdmin: profile?.role === 'admin',
   };
 

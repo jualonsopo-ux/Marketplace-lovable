@@ -74,8 +74,8 @@ export function KPICards() {
       trend: analytics?.totalRevenue > 0 ? "Sesiones completadas" : "Aún no hay ingresos"
     },
     {
-      title: "Sesiones Completadas",
-      value: analytics?.completedSessions || 0,
+      title: "Reservas Completadas",
+      value: analytics?.completedBookings || 0,
       icon: Calendar,
       trend: `${(analytics?.completionRate || 0).toFixed(1)}% tasa de completado`
     },
@@ -86,8 +86,8 @@ export function KPICards() {
       trend: analytics?.averageRating > 0 ? "Basado en reviews" : "Sin reviews aún"
     },
     {
-      title: "Total Sesiones",
-      value: analytics?.totalSessions || 0,
+      title: "Total Reservas",
+      value: analytics?.totalBookings || 0,
       icon: Users,
       trend: "Este mes"
     }

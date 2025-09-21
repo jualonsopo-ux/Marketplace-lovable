@@ -54,7 +54,7 @@ export async function createTestUser() {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('user_id', authData.user.id)
+        .eq('auth_user_id', authData.user.id)
         .single()
 
       if (profileError && profileError.code === 'PGRST116') {
@@ -64,15 +64,12 @@ export async function createTestUser() {
         const { error: insertError } = await supabase
           .from('profiles')
           .insert({
-            user_id: authData.user.id,
-            display_name: 'Coach Test',
+            auth_user_id: authData.user.id,
+            full_name: 'Coach Test',
+            handle: 'coach-test',
+            email: authData.user.email || 'coach@test.com',
             role: 'coach',
-            status: 'active',
-            timezone: 'Europe/Madrid',
-            language: 'es',
-            email_notifications: true,
-            push_notifications: true,
-            marketing_emails: false
+            is_active: true
           })
 
         if (insertError) {
@@ -92,7 +89,7 @@ export async function createTestUser() {
           const { error: updateError } = await supabase
             .from('profiles')
             .update({ role: 'coach' })
-            .eq('user_id', authData.user.id)
+            .eq('auth_user_id', authData.user.id)
             
           if (updateError) {
             console.error('❌ Error actualizando rol:', updateError)
@@ -105,27 +102,24 @@ export async function createTestUser() {
       // 3. Crear perfil de coach
       console.log('🎯 Creando perfil de coach...')
       
-      // Verificar si ya existe
+      // Verificar si ya existe un coach
       const { data: existingCoach } = await supabase
-        .from('coach_profiles')
+        .from('coaches')
         .select('id')
-        .eq('user_id', authData.user.id)
+        .eq('profile_id', authData.user.id)
         .single()
         
       if (!existingCoach) {
         const { error: coachError } = await supabase
-          .from('coach_profiles')
+          .from('coaches')
           .insert({
-            user_id: authData.user.id,
-            title: 'Coach de Prueba',
+            profile_id: authData.user.id,
+            display_name: 'Coach de Prueba',
             bio: 'Este es un coach de prueba para testing del sistema CoachWave. Especializado en coaching personal y ejecutivo.',
-            years_experience: 5,
-            specializations: ['coaching-personal', 'coaching-ejecutivo'],
-            hourly_rate: 75.00,
+            specialties: ['coaching-personal', 'coaching-ejecutivo'],
             languages: ['es', 'en'],
-            coaching_methods: ['video', 'phone'],
-            verification_status: 'verified',
-            is_active: true
+            is_published: true,
+            whatsapp_enabled: true
           })
 
         if (coachError) {
@@ -167,23 +161,23 @@ export async function cleanupTestUser() {
     })
     
     if (loginData.user) {
-      // Eliminar coach_profiles
+      // Eliminar coaches
       await supabase
-        .from('coach_profiles')
+        .from('coaches')
         .delete()
-        .eq('user_id', loginData.user.id)
+        .eq('profile_id', loginData.user.id)
       
-      // Eliminar sessions (usar el nombre correcto de la tabla)
+      // Eliminar bookings relacionadas
       await supabase
-        .from('sessions')
+        .from('bookings')
         .delete()
-        .eq('workspace_id', 1) // Assuming default workspace
+        .eq('coach_id', loginData.user.id)
       
       // Eliminar profiles
       await supabase
         .from('profiles')
         .delete()
-        .eq('user_id', loginData.user.id)
+        .eq('auth_user_id', loginData.user.id)
       
       console.log('✅ Datos del usuario de prueba eliminados')
     }

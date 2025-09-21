@@ -75,15 +75,15 @@ export const debugCommands = {
   async checkCoachProfiles() {
     console.log('🎯 Verificando perfiles de coach...');
     const { data, error } = await supabase
-      .from('coach_profiles')
+      .from('coaches')
       .select(`
         id,
-        title,
+        display_name,
         bio,
-        verification_status,
-        is_active,
+        is_published,
+        whatsapp_enabled,
         profiles (
-          display_name,
+          full_name,
           role
         )
       `)
@@ -93,14 +93,14 @@ export const debugCommands = {
     return { data, error };
   },
 
-  async checkSessions() {
-    console.log('📅 Verificando sesiones...');
+  async checkBookings() {
+    console.log('📅 Verificando reservas...');
     const { data, error } = await supabase
-      .from('sessions')
+      .from('bookings')
       .select('*')
       .limit(10);
     
-    console.log('Sessions:', { data, error });
+    console.log('Bookings:', { data, error });
     return { data, error };
   },
 

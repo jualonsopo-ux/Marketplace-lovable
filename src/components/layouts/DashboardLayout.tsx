@@ -57,10 +57,10 @@ export function DashboardLayout() {
       <div className="border-t p-4">
         <div className="flex items-center gap-2 mb-2">
           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-            {profile?.display_name?.[0] || profile?.user_id?.[0] || 'U'}
+            {profile?.full_name?.[0] || profile?.auth_user_id?.[0] || 'U'}
           </div>
           <div className="flex-1 text-sm">
-            <p className="font-medium">{profile?.display_name || 'Usuario'}</p>
+            <p className="font-medium">{profile?.full_name || 'Usuario'}</p>
             <p className="text-muted-foreground">Coach</p>
           </div>
         </div>

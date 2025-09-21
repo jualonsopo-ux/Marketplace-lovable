@@ -110,12 +110,12 @@ export function AdminDashboardLayout() {
             <div className="flex items-center space-x-3 mb-3">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-warning to-warning/80 flex items-center justify-center">
                 <span className="text-sm font-medium text-warning-foreground">
-                  {profile?.display_name?.[0] || 'A'}
+                  {profile?.full_name?.[0] || 'A'}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground truncate">
-                  {profile?.display_name || 'Admin'}
+                  {profile?.full_name || 'Admin'}
                 </p>
                 <p className="text-xs text-muted-foreground">Administrador</p>
               </div>

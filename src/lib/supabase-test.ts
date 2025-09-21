@@ -24,15 +24,15 @@ export async function testSupabaseConnection() {
       console.log('👤 Current user:', user ? user.email : 'No user logged in');
     }
     
-    // Test coach_profiles table (new table from migration)
+    // Test coaches table
     const { data: coachData, error: coachError } = await supabase
-      .from('coach_profiles')
+      .from('coaches')
       .select('count');
       
     if (coachError) {
-      console.error('❌ Coach profiles table error:', coachError);
+      console.error('❌ Coaches table error:', coachError);
     } else {
-      console.log('✅ Coach profiles table accessible:', { coachData });
+      console.log('✅ Coaches table accessible:', { coachData });
     }
     
     return true;
@@ -66,11 +66,11 @@ export async function testAllTables() {
   
   const tables: (keyof Database['public']['Tables'])[] = [
     'profiles',
-    'coach_profiles', 
-    'sessions',
+    'coaches', 
+    'bookings',
     'reviews',
-    'categories',
-    'availability_schedules'
+    'offerings',
+    'faq'
   ];
   
   const results: Record<string, boolean> = {};

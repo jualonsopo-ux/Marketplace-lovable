@@ -4,18 +4,16 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface CoachAnalyticsData {
   totalRevenue: number;
-  completedSessions: number;
-  totalSessions: number;
+  completedBookings: number;
+  totalBookings: number;
   completionRate: number;
   averageRating: number;
-  sessions: Array<{
-    id: number;
-    starts_at: string;
-    ends_at: string;
-    price_eur: number;
+  bookings: Array<{
+    id: string;
+    scheduled_at: string;
     status: string;
-    title?: string;
-    session_type?: string;
+    name: string;
+    email: string;
   }>;
 }
 
@@ -39,59 +37,57 @@ async function fetchCoachAnalytics(
       break;
   }
 
-  // First get the coach profile for this user
-  const { data: coachProfile, error: profileError } = await supabase
-    .from('coach_profiles')
+  // First get the coach for this user
+  const { data: coach, error: coachError } = await supabase
+    .from('coaches')
     .select('id')
-    .eq('user_id', userId)
+    .eq('profile_id', userId)
     .single();
 
-  if (profileError || !coachProfile) {
-    throw new Error(`Failed to find coach profile: ${profileError?.message || 'No coach profile found'}`);
+  if (coachError || !coach) {
+    throw new Error(`Failed to find coach: ${coachError?.message || 'No coach found'}`);
   }
 
-  // Fetch sessions data using coach_profile_id
-  const { data: sessions, error } = await supabase
-    .from('sessions')
-    .select('id, starts_at, ends_at, price_eur, status, title, session_type')
-    .eq('coach_profile_id', coachProfile.id)
-    .gte('starts_at', startDate.toISOString())
-    .lte('starts_at', now.toISOString())
-    .order('starts_at', { ascending: false });
+  // Fetch bookings data using coach_id
+  const { data: bookings, error } = await supabase
+    .from('bookings')
+    .select('id, scheduled_at, status, name, email')
+    .eq('coach_id', coach.id)
+    .gte('scheduled_at', startDate.toISOString())
+    .lte('scheduled_at', now.toISOString())
+    .order('scheduled_at', { ascending: false });
 
   if (error) {
-    throw new Error(`Failed to fetch sessions: ${error.message}`);
+    throw new Error(`Failed to fetch bookings: ${error.message}`);
   }
 
-  const sessionsData = sessions || [];
+  const bookingsData = bookings || [];
   
   // Calculate metrics
-  const completedSessions = sessionsData.filter(s => s.status === 'completed');
-  const totalRevenue = completedSessions.reduce((sum, session) => sum + Number(session.price_eur || 0), 0);
-  const totalSessions = sessionsData.length;
-  const completionRate = totalSessions > 0 ? (completedSessions.length / totalSessions) * 100 : 0;
+  const completedBookings = bookingsData.filter(b => b.status === 'completed');
+  const totalRevenue = 0; // Revenue calculation would need pricing data from offerings
+  const totalBookings = bookingsData.length;
+  const completionRate = totalBookings > 0 ? (completedBookings.length / totalBookings) * 100 : 0;
   
   // Calculate average rating (placeholder - will be implemented when reviews are available)
   const averageRating = 0;
 
-  // Transform sessions data
-  const transformedSessions = sessionsData.map(session => ({
-    id: session.id,
-    starts_at: session.starts_at,
-    ends_at: session.ends_at,
-    price_eur: Number(session.price_eur || 0),
-    status: session.status,
-    title: session.title,
-    session_type: session.session_type
+  // Transform bookings data
+  const transformedBookings = bookingsData.map(booking => ({
+    id: booking.id,
+    scheduled_at: booking.scheduled_at,
+    status: booking.status,
+    name: booking.name,
+    email: booking.email
   }));
 
   return {
     totalRevenue,
-    completedSessions: completedSessions.length,
-    totalSessions,
+    completedBookings: completedBookings.length,
+    totalBookings,
     completionRate,
     averageRating,
-    sessions: transformedSessions
+    bookings: transformedBookings
   };
 }
 

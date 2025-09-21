@@ -37,7 +37,7 @@ export function ProtectedRoute({
       switch (profile.role) {
         case 'coach':
           return <Navigate to="/coach/dashboard" replace />
-        case 'client':
+        case 'staff':
           return <Navigate to="/client/dashboard" replace />
         case 'admin':
           return <Navigate to="/admin/dashboard" replace />

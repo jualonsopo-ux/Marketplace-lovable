@@ -49,19 +49,19 @@ export function RevenueChart() {
   }
 
   // Process data for the chart
-  const chartData: ChartDataPoint[] = analytics?.sessions
-    .filter(s => s.status === 'completed')
-    .reduce((acc, session) => {
-      const date = format(parseISO(session.starts_at), 'MMM dd', { locale: es });
+  const chartData: ChartDataPoint[] = analytics?.bookings
+    .filter(b => b.status === 'completed')
+    .reduce((acc, booking) => {
+      const date = format(parseISO(booking.scheduled_at), 'MMM dd', { locale: es });
       const existing = acc.find(d => d.date === date);
       
       if (existing) {
-        existing.revenue += session.price_eur;
+        existing.revenue += 50; // Placeholder revenue per booking
         existing.sessions += 1;
       } else {
         acc.push({ 
           date, 
-          revenue: session.price_eur,
+          revenue: 50, // Placeholder revenue per booking
           sessions: 1
         });
       }

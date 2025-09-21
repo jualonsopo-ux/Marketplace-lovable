@@ -107,12 +107,12 @@ export function CoachDashboardLayout() {
             <div className="flex items-center space-x-3 mb-3">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
                 <span className="text-sm font-medium text-primary-foreground">
-                  {profile?.display_name?.[0] || 'C'}
+                  {profile?.full_name?.[0] || 'C'}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground truncate">
-                  {profile?.display_name || 'Coach'}
+                  {profile?.full_name || 'Coach'}
                 </p>
                 <p className="text-xs text-muted-foreground">Coach</p>
               </div>

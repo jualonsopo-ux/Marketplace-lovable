@@ -3,21 +3,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 
-// Simplified user profile type matching Supabase profiles table
+// User profile type matching Supabase profiles table
 interface UserProfile {
   id: string;
-  user_id: string;
-  display_name?: string;
-  avatar_url?: string;
-  bio?: string;
-  phone?: string;
-  role: 'client' | 'coach' | 'admin';
-  status: string;
-  timezone: string;
-  language: string;
-  email_notifications: boolean;
-  push_notifications: boolean;
-  marketing_emails: boolean;
+  auth_user_id: string;
+  full_name: string;
+  handle: string;
+  email: string;
+  role: 'coach' | 'psychologist' | 'admin' | 'staff';
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -33,7 +27,7 @@ export function useCurrentUserProfile() {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('user_id', authUser.id)
+        .eq('auth_user_id', authUser.id)
         .single();
       
       if (error) throw error;
@@ -55,7 +49,7 @@ export function useUpdateUserProfile() {
       const { data: updatedProfile, error } = await supabase
         .from('profiles')
         .update(data)
-        .eq('user_id', authUser.id)
+        .eq('auth_user_id', authUser.id)
         .select()
         .single();
       

@@ -100,7 +100,7 @@ export function LoginPage() {
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('user_id', authData.user.id)
+        .eq('auth_user_id', authData.user.id)
         .single()
 
       if (profileError) {
@@ -131,7 +131,7 @@ export function LoginPage() {
           case 'coach':
             redirectPath = '/coach/dashboard'
             break
-          case 'client':
+          case 'staff':
             redirectPath = '/client/dashboard'
             break
           case 'admin':

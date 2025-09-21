@@ -27,7 +27,7 @@ export function useRoleRedirect() {
     // Only redirect if user is on root path or wrong role area
     if (currentPath === '/' || 
         (profile.role === 'coach' && !currentPath.startsWith('/coach')) ||
-        (profile.role === 'client' && !currentPath.startsWith('/client')) ||
+        (profile.role === 'staff' && !currentPath.startsWith('/client')) ||
         (profile.role === 'admin' && !currentPath.startsWith('/admin'))) {
       navigate(targetPath, { replace: true })
     }
