@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { RouteDebugger } from '@/components/auth/EnhancedProtectedRoute';
 import { getCoachById } from '@/data/coaches';
 import BookingFlow from '@/components/BookingFlow';
 
@@ -110,6 +111,8 @@ const App = () => (
             {/* 404 Page */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          {/* Route Debugger - Development only */}
+          {import.meta.env.DEV && <RouteDebugger />}
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
