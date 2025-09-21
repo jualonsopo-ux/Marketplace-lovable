@@ -1347,6 +1347,14 @@ export type Database = {
         | "canceled"
         | "no_show"
         | "completed"
+      channel_enum:
+        | "instagram"
+        | "tiktok"
+        | "lib"
+        | "seo"
+        | "referral"
+        | "ads"
+        | "otros"
       consent_base: "Art. 6.1.a" | "Art. 6.1.b"
       currency: "EUR" | "USD" | "GBP"
       flag_state: "on" | "off"
@@ -1511,6 +1519,15 @@ export const Constants = {
         "canceled",
         "no_show",
         "completed",
+      ],
+      channel_enum: [
+        "instagram",
+        "tiktok",
+        "lib",
+        "seo",
+        "referral",
+        "ads",
+        "otros",
       ],
       consent_base: ["Art. 6.1.a", "Art. 6.1.b"],
       currency: ["EUR", "USD", "GBP"],
