@@ -1,12 +1,9 @@
-import { Coach, Session, Review, User, QueryParams } from '@/schemas';
-import { CoachSchema, SessionSchema, ReviewSchema, UserSchema } from '@/schemas';
+import { Coach, Session, Review, User } from '@/schemas';
+import { SessionSchema, ReviewSchema, UserSchema } from '@/schemas';
+import { generateUUID } from '@/lib/validation';
 import { 
-  mockCoaches, 
-  mockSessions, 
-  mockReviews, 
   mockUsers,
-  generateUUID, 
-  generateDate 
+  createMockApiResponse
 } from '@/lib/mock-data';
 
 // ============================================================================
@@ -30,19 +27,33 @@ interface ApiResponse<T> {
 
 const CURRENT_USER_ID = 'current-user-123';
 
-function createMockApiResponse<T>(data: T, metadata?: ApiResponse<T>['metadata']): T {
+function createApiResponse<T>(data: T, metadata?: ApiResponse<T>['metadata']): T {
   // In a real app, this would return { data, metadata }
   // For simplicity, we're just returning the data
   return data;
 }
 
-function validateData<T>(schema: any, data: any): T {
-  try {
-    return schema.parse(data);
-  } catch (error) {
-    console.error('Validation error:', error);
-    throw new Error('Invalid data format');
-  }
+// Generate date helper
+function generateDate(): Date {
+  return new Date();
+}
+
+interface QueryParams {
+  filters?: Record<string, any>;
+  search?: string;
+  sortBy?: {
+    field: string;
+    order?: 'asc' | 'desc';
+  };
+  pagination?: {
+    page?: number;
+    limit?: number;
+  };
+}
+
+export interface CoachFilters {
+  category?: string;
+  isActive?: boolean;
 }
 
 function applyFilters<T extends Record<string, any>>(
@@ -96,59 +107,43 @@ function applyPagination<T>(
 // COACHES API
 // ============================================================================
 
-export async function fetchCoaches(params?: QueryParams): Promise<Coach[]> {
-  // Simulate API delay
+// Mock coaches data
+const mockCoaches: Coach[] = [
+  {
+    id: generateUUID(),
+    name: 'Ana García',
+    handle: '@ana_coach',
+    role: 'Coach',
+    avatar: '/src/assets/coach-ana.jpg',
+    bio: 'Coach profesional especializada en liderazgo y desarrollo de carrera',
+    headline: 'Coach de Liderazgo y Carrera Profesional',
+    category: 'Carrera Profesional',
+    rating: 4.9,
+    reviewsCount: 127,
+    showUpRate: 0.98,
+    priceHintS1: 'Desde 65€/sesión',
+    badges: ['Top Coach', 'Verificado'],
+    specialties: ['Liderazgo', 'Desarrollo profesional', 'Transición de carrera'],
+    languages: ['Español', 'Inglés'],
+    location: 'Madrid, España',
+    faq: [
+      {
+        question: '¿Cómo es tu metodología de coaching?',
+        answer: 'Utilizo un enfoque integral que combina técnicas de coaching ontológico con herramientas de desarrollo profesional.'
+      }
+    ],
+    reviews: [
+      {
+        text: 'Ana me ayudó a conseguir el ascenso que tanto deseaba. Excelente profesional.',
+        author: 'María L.'
+      }
+    ]
+  }
+];
+
+export async function fetchCoaches(filters?: CoachFilters): Promise<Coach[]> {
   await new Promise(resolve => setTimeout(resolve, 800));
-  
-  let filteredCoaches = [...mockCoaches];
-  
-  // Apply filters
-  if (params?.filters) {
-    filteredCoaches = applyFilters(filteredCoaches, params.filters);
-  }
-  
-  // Apply search
-  if (params?.search) {
-    const searchLower = params.search.toLowerCase();
-    filteredCoaches = filteredCoaches.filter(coach => 
-      coach.name.toLowerCase().includes(searchLower) ||
-      coach.specialties.some(s => s.toLowerCase().includes(searchLower)) ||
-      coach.bio.toLowerCase().includes(searchLower)
-    );
-  }
-  
-  // Apply sorting
-  if (params?.sortBy) {
-    const { field, order = 'asc' } = params.sortBy;
-    filteredCoaches.sort((a, b) => {
-      const aValue = a[field as keyof Coach];
-      const bValue = b[field as keyof Coach];
-      
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return order === 'asc' ? aValue - bValue : bValue - aValue;
-      }
-      
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return order === 'asc' 
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      }
-      
-      return 0;
-    });
-  }
-  
-  // Apply pagination
-  const result = applyPagination(
-    filteredCoaches, 
-    params?.pagination?.page, 
-    params?.pagination?.limit
-  );
-  
-  return createMockApiResponse(
-    result.data.map(coach => validateData(CoachSchema, coach)),
-    result.metadata
-  );
+  return createApiResponse(mockCoaches);
 }
 
 export async function fetchCoach(id: string): Promise<Coach> {
@@ -159,34 +154,19 @@ export async function fetchCoach(id: string): Promise<Coach> {
     throw new Error(`Coach with id ${id} not found`);
   }
   
-  return createMockApiResponse(validateData(CoachSchema, coach));
+  return createApiResponse(coach);
 }
 
 // ============================================================================
 // SESSIONS API
 // ============================================================================
 
-export async function fetchSessions(params?: QueryParams): Promise<Session[]> {
+// Mock sessions data  
+const mockSessions: Session[] = [];
+
+export async function fetchSessions(userId: string, role: 'client' | 'coach' = 'client'): Promise<Session[]> {
   await new Promise(resolve => setTimeout(resolve, 600));
-  
-  let filteredSessions = [...mockSessions];
-  
-  // Apply filters
-  if (params?.filters) {
-    filteredSessions = applyFilters(filteredSessions, params.filters);
-  }
-  
-  // Apply pagination
-  const result = applyPagination(
-    filteredSessions,
-    params?.pagination?.page,
-    params?.pagination?.limit
-  );
-  
-  return createMockApiResponse(
-    result.data.map(session => validateData(SessionSchema, session)),
-    result.metadata
-  );
+  return createApiResponse(mockSessions);
 }
 
 export async function fetchSession(id: string): Promise<Session> {
@@ -197,23 +177,22 @@ export async function fetchSession(id: string): Promise<Session> {
     throw new Error(`Session with id ${id} not found`);
   }
   
-  return createMockApiResponse(validateData(SessionSchema, session));
+  return createApiResponse(session);
 }
 
-export async function bookSession(data: Omit<Session, 'id' | 'createdAt' | 'updatedAt'>): Promise<Session> {
+export async function createSession(data: Omit<Session, 'id' | 'created_at' | 'updated_at'>): Promise<Session> {
   await new Promise(resolve => setTimeout(resolve, 1000));
   
   const newSession: Session = {
     ...data,
     id: generateUUID(),
-    createdAt: generateDate(),
-    updatedAt: generateDate(),
+    created_at: generateDate(),
+    updated_at: generateDate(),
   };
   
-  // In a real app, this would persist to a database
   mockSessions.push(newSession);
   
-  return createMockApiResponse(validateData(SessionSchema, newSession));
+  return createApiResponse(newSession);
 }
 
 export async function updateSession(id: string, data: Partial<Session>): Promise<Session> {
@@ -227,12 +206,12 @@ export async function updateSession(id: string, data: Partial<Session>): Promise
   const updatedSession = {
     ...mockSessions[sessionIndex],
     ...data,
-    updatedAt: generateDate(),
+    updated_at: generateDate(),
   };
   
   mockSessions[sessionIndex] = updatedSession;
   
-  return createMockApiResponse(validateData(SessionSchema, updatedSession));
+  return createApiResponse(updatedSession);
 }
 
 export async function cancelSession(id: string): Promise<void> {
@@ -246,7 +225,7 @@ export async function cancelSession(id: string): Promise<void> {
   mockSessions[sessionIndex] = {
     ...mockSessions[sessionIndex],
     status: 'cancelled',
-    updatedAt: generateDate(),
+    updated_at: generateDate(),
   };
 }
 
@@ -254,42 +233,28 @@ export async function cancelSession(id: string): Promise<void> {
 // REVIEWS API
 // ============================================================================
 
-export async function fetchReviews(params?: QueryParams): Promise<Review[]> {
+// Mock reviews data
+const mockReviews: Review[] = [];
+
+export async function fetchReviews(filters?: Record<string, any>): Promise<Review[]> {
   await new Promise(resolve => setTimeout(resolve, 500));
-  
-  let filteredReviews = [...mockReviews];
-  
-  // Apply filters (e.g., by coach ID)
-  if (params?.filters) {
-    filteredReviews = applyFilters(filteredReviews, params.filters);
-  }
-  
-  // Apply pagination
-  const result = applyPagination(
-    filteredReviews,
-    params?.pagination?.page,
-    params?.pagination?.limit
-  );
-  
-  return createMockApiResponse(
-    result.data.map(review => validateData(ReviewSchema, review)),
-    result.metadata
-  );
+  return createApiResponse(mockReviews);
 }
 
-export async function createReview(data: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
+export async function createReview(data: Omit<Review, 'id' | 'created_at' | 'updated_at'>): Promise<Review> {
   await new Promise(resolve => setTimeout(resolve, 800));
   
   const newReview: Review = {
     ...data,
     id: generateUUID(),
-    createdAt: generateDate(),
+    is_verified: false,
+    created_at: generateDate(),
+    updated_at: generateDate(),
   };
   
-  // In a real app, this would persist to a database
   mockReviews.push(newReview);
   
-  return createMockApiResponse(validateData(ReviewSchema, newReview));
+  return createApiResponse(newReview);
 }
 
 // ============================================================================
@@ -314,7 +279,7 @@ export async function fetchCurrentUser(): Promise<User> {
     updated_at: '2024-09-20T00:00:00Z',
   };
   
-  return createMockApiResponse(validateData(UserSchema, mockUser));
+  return createApiResponse(mockUser);
 }
 
 export async function updateUser(id: string, data: Partial<User>): Promise<User> {
@@ -327,5 +292,5 @@ export async function updateUser(id: string, data: Partial<User>): Promise<User>
     updated_at: new Date().toISOString(),
   };
   
-  return createMockApiResponse(validateData(UserSchema, updatedUser));
+  return createApiResponse(updatedUser);
 }

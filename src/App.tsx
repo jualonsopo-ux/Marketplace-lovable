@@ -155,7 +155,8 @@ function BookingFlowRoute() {
         window.location.href = `/coaches/${coachId}`;
       }}
       onComplete={() => {
-        window.location.href = '/';
+        // Redirect to login after booking completion to access main app
+        window.location.href = '/auth';
       }}
     />
   );

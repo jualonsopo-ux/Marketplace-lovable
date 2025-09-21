@@ -66,22 +66,22 @@ export function useCreateSession() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (data: SessionCreateForm & { coach_id: string }) => 
-      api.createSession(data),
+    mutationFn: (sessionData: SessionCreateForm & { coach_id: string }) => 
+      api.createSession({
+        ...sessionData,
+        coach_id: sessionData.coach_id,
+        client_id: 'current-user-123', // This would come from auth context in real app
+        status: 'scheduled',
+        payment_status: 'pending',
+        amount: 65,
+        currency: 'EUR',
+      }),
     onSuccess: (newSession) => {
       // Invalidate all session lists
       queryClient.invalidateQueries({ queryKey: queryKeys.sessions.all });
       
       // Add the new session to cache
       queryClient.setQueryData(queryKeys.sessions.detail(newSession.id), newSession);
-      
-      // Optimistically update upcoming sessions
-      const upcomingKey = queryKeys.sessions.upcoming(newSession.client_id);
-      queryClient.setQueryData(upcomingKey, (old: Session[] = []) => {
-        return [...old, newSession].sort((a, b) => 
-          a.scheduled_start.getTime() - b.scheduled_start.getTime()
-        );
-      });
       
       toast({
         title: "Sesión reservada",
@@ -132,20 +132,11 @@ export function useCancelSession() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ id, reason }: { id: string; reason?: string }) => 
-      api.cancelSession(id, reason),
-    onSuccess: (cancelledSession) => {
-      // Update the session in cache
-      queryClient.setQueryData(queryKeys.sessions.detail(cancelledSession.id), cancelledSession);
-      
-      // Update lists
-      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.lists() });
-      
-      // Remove from upcoming sessions optimistically
-      const upcomingKey = queryKeys.sessions.upcoming(cancelledSession.client_id);
-      queryClient.setQueryData(upcomingKey, (old: Session[] = []) => {
-        return old.filter(session => session.id !== cancelledSession.id);
-      });
+    mutationFn: (id: string) => 
+      api.cancelSession(id),
+    onSuccess: () => {
+      // Invalidate lists to refresh data
+      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.all });
       
       toast({
         title: "Sesión cancelada",

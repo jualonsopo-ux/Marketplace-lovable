@@ -11,7 +11,7 @@ import type { ReviewCreateForm, Review } from '@/schemas';
 export function useReviews(coachId: string) {
   return useQuery({
     queryKey: queryKeys.reviews.list(coachId),
-    queryFn: () => api.fetchReviews(coachId),
+    queryFn: () => api.fetchReviews({ coach_id: coachId }),
     enabled: !!coachId,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
@@ -65,8 +65,14 @@ export function useCreateReview() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (data: ReviewCreateForm & { session_id: string; coach_id: string }) => 
-      api.createReview(data),
+    mutationFn: (reviewData: ReviewCreateForm & { session_id: string; coach_id: string }) => 
+      api.createReview({
+        ...reviewData,
+        session_id: reviewData.session_id,
+        coach_id: reviewData.coach_id,
+        client_id: 'current-user-123', // This would come from auth context in real app
+        is_verified: false,
+      }),
     onSuccess: (newReview) => {
       // Update reviews list for the coach
       const reviewsKey = queryKeys.reviews.list(newReview.coach_id);
@@ -214,7 +220,7 @@ export function usePrefetchReviews() {
   return (coachId: string) => {
     queryClient.prefetchQuery({
       queryKey: queryKeys.reviews.list(coachId),
-      queryFn: () => api.fetchReviews(coachId),
+      queryFn: () => api.fetchReviews({ coach_id: coachId }),
       staleTime: 5 * 60 * 1000,
     });
   };
