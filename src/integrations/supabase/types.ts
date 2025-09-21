@@ -1134,7 +1134,7 @@ export type Database = {
         | "cancelled"
         | "no_show"
       session_type_enum: "S1" | "S2" | "follow_up" | "consultation"
-      user_role_enum: "client" | "coach" | "admin"
+      user_role_enum: "client" | "coach" | "admin" | "psychologist" | "staff"
       webview_type: "instagram" | "tiktok" | "other"
     }
     CompositeTypes: {
@@ -1284,7 +1284,7 @@ export const Constants = {
         "no_show",
       ],
       session_type_enum: ["S1", "S2", "follow_up", "consultation"],
-      user_role_enum: ["client", "coach", "admin"],
+      user_role_enum: ["client", "coach", "admin", "psychologist", "staff"],
       webview_type: ["instagram", "tiktok", "other"],
     },
   },
