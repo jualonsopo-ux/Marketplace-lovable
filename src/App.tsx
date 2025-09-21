@@ -7,6 +7,11 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { getCoachById } from '@/data/coaches';
 import BookingFlow from '@/components/BookingFlow';
 
+// Import debug commands in development
+if (import.meta.env.DEV) {
+  import('./lib/debug-commands');
+}
+
 // Layouts
 import { PublicLayout } from '@/components/layouts/PublicLayout';
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
@@ -18,6 +23,7 @@ import CoachLandingPage from '@/components/CoachLandingPage';
 
 // Auth Pages
 import AuthPage from './pages/AuthPage';
+import { LoginPage } from './pages/auth/LoginPage';
 
 // Coach Pages
 import { AnalyticsDashboard } from '@/pages/coach/AnalyticsDashboard';
@@ -49,6 +55,7 @@ const App = () => (
 
             {/* Auth Routes */}
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/login" element={<LoginPage />} />
 
             {/* Coach Dashboard Routes */}
             <Route 
