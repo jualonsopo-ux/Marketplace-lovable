@@ -42,6 +42,9 @@ import { ClientDashboard } from '@/pages/client/ClientDashboard';
 
 // Admin Pages
 import { AdminDashboard } from '@/pages/admin/AdminDashboard';
+
+// Role Switch
+import { RoleSwitch } from '@/components/RoleSwitch';
 import {
   ClientDetailPage,
   NewSessionPage,
@@ -177,6 +180,13 @@ const App = () => (
               <Route path="settings" element={<div className="p-6"><h1 className="text-2xl font-bold">Configuración Global</h1></div>} />
               <Route path="alerts" element={<div className="p-6"><h1 className="text-2xl font-bold">Alertas del Sistema</h1></div>} />
             </Route>
+
+            {/* Role Switch Route - For admins to choose between dashboards */}
+            <Route path="/role-switch" element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <RoleSwitch />
+              </ProtectedRoute>
+            } />
 
             {/* Legacy coach pages (outside main layout for full-screen experience) */}
             <Route path="/coaches/:coachId" element={<CoachLandingPageRoute />} />

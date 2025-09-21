@@ -57,10 +57,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle(); // Use maybeSingle instead of single
       
       if (error) {
         console.error('Error fetching profile:', error);
+        return null;
+      }
+      
+      // If no profile found, user needs onboarding
+      if (!data) {
+        console.log('No profile found, user needs onboarding');
         return null;
       }
       

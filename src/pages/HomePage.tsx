@@ -86,7 +86,8 @@ export function HomePage() {
           navigate('/client/dashboard');
           break;
         case 'admin':
-          navigate('/admin/dashboard');
+          // Admin without preference - go to role switch  
+          navigate('/role-switch');
           break;
         default:
           console.log('Unknown role, redirecting to auth');

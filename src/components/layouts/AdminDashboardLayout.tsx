@@ -17,7 +17,8 @@ import {
   Eye,
   FileText,
   AlertTriangle,
-  Activity
+  Activity,
+  RotateCcw
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -120,6 +121,16 @@ export function AdminDashboardLayout() {
               </div>
             </div>
           )}
+          
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn("mb-2", sidebarCollapsed ? "px-2" : "w-full")}
+            onClick={() => navigate('/role-switch')}
+          >
+            <RotateCcw className={cn("w-4 h-4", !sidebarCollapsed && "mr-2")} />
+            {!sidebarCollapsed && "Cambiar Vista"}
+          </Button>
           
           <Button
             variant="outline"
