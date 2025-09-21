@@ -287,12 +287,11 @@ export type Database = {
           created_at: string
           currency: string | null
           hourly_rate: number | null
-          id: number
+          id: string
           instant_booking: boolean | null
           is_active: boolean | null
           is_featured: boolean | null
           languages: string[] | null
-          new_id: string | null
           response_time_hours: number | null
           specializations: string[] | null
           title: string
@@ -310,12 +309,11 @@ export type Database = {
           created_at?: string
           currency?: string | null
           hourly_rate?: number | null
-          id?: never
+          id?: string
           instant_booking?: boolean | null
           is_active?: boolean | null
           is_featured?: boolean | null
           languages?: string[] | null
-          new_id?: string | null
           response_time_hours?: number | null
           specializations?: string[] | null
           title: string
@@ -333,12 +331,11 @@ export type Database = {
           created_at?: string
           currency?: string | null
           hourly_rate?: number | null
-          id?: never
+          id?: string
           instant_booking?: boolean | null
           is_active?: boolean | null
           is_featured?: boolean | null
           languages?: string[] | null
-          new_id?: string | null
           response_time_hours?: number | null
           specializations?: string[] | null
           title?: string
@@ -861,16 +858,14 @@ export type Database = {
           client_notes: string | null
           client_profile_id: string | null
           coach_notes: string | null
-          coach_profile_id: number | null
+          coach_profile_id: string | null
           created_at: string
           created_by: string
           description: string | null
           ends_at: string
-          id: number
+          id: string
           location: string | null
           meeting_link: string | null
-          new_coach_profile_id: string | null
-          new_id: string | null
           notes: string | null
           price_eur: number | null
           session_type: string | null
@@ -888,16 +883,14 @@ export type Database = {
           client_notes?: string | null
           client_profile_id?: string | null
           coach_notes?: string | null
-          coach_profile_id?: number | null
+          coach_profile_id?: string | null
           created_at?: string
           created_by: string
           description?: string | null
           ends_at: string
-          id?: never
+          id?: string
           location?: string | null
           meeting_link?: string | null
-          new_coach_profile_id?: string | null
-          new_id?: string | null
           notes?: string | null
           price_eur?: number | null
           session_type?: string | null
@@ -915,16 +908,14 @@ export type Database = {
           client_notes?: string | null
           client_profile_id?: string | null
           coach_notes?: string | null
-          coach_profile_id?: number | null
+          coach_profile_id?: string | null
           created_at?: string
           created_by?: string
           description?: string | null
           ends_at?: string
-          id?: never
+          id?: string
           location?: string | null
           meeting_link?: string | null
-          new_coach_profile_id?: string | null
-          new_id?: string | null
           notes?: string | null
           price_eur?: number | null
           session_type?: string | null
@@ -941,6 +932,20 @@ export type Database = {
             columns: ["calendar_id"]
             isOneToOne: false
             referencedRelation: "calendars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_client_profile_id_fkey"
+            columns: ["client_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_coach_profile_id_fkey"
+            columns: ["coach_profile_id"]
+            isOneToOne: false
+            referencedRelation: "coach_profiles"
             referencedColumns: ["id"]
           },
           {
